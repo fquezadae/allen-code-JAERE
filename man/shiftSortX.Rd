@@ -4,18 +4,20 @@
 \alias{shiftSortX}
 \title{shiftSortX}
 \usage{
-shiftSortX(x, ch, alts, ab, y)
+shiftSortX(x, ch, y, distance, alts, ab)
 }
 \arguments{
-\item{x}{Matrix of choice possibilites and distance from create_logit_input}
+\item{x}{Matrix of choice possibilites from create_logit_input}
 
 \item{ch}{Data corresponding to actual zonal choice}
 
+\item{y}{Data corresponding to actual catch}
+
+\item{distance}{Data corresponding to distance}
+
 \item{alts}{Number of alternative choices in model}
 
-\item{ab}{Number of parameters in model? number of cost parameters + number of alts}
-
-\item{y}{Data corresponding to actual catch scaled}
+\item{ab}{Number of cost parameters + number of alts}
 }
 \description{
 Shifts choices so that the chosen zone will be automatically the first one

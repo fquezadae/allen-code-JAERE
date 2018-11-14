@@ -4,10 +4,10 @@
 \alias{create_logit_input}
 \title{create_logit_input}
 \usage{
-create_logit_input(modelInputData)
+create_logit_input(choice)
 }
 \arguments{
-\item{modelInputData}{Data structure with information on variable choices and the alternative matrix (distances)}
+\item{choice}{A (number of observations) x 1 vector of chosen locations}
 }
 \description{
 Creates a data matrix that is consistent with the built in model forms

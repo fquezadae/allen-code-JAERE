@@ -4,14 +4,16 @@
 \alias{clogit}
 \title{clogit}
 \usage{
-clogit(starts3, dat, alts, otherdat)
+clogit(starts3, dat, otherdat, alts)
 }
 \arguments{
 \item{starts3}{Starting values}
 
-\item{alts}{Number of alternative choices in model}
+\item{dat}{Data matrix, see output from shiftSortX, alternatives with distance by column bind}
 
-\item{d}{Data matrix, see output from shiftSortX}
+\item{otherdat}{Other data used in model}
+
+\item{alts}{Number of alternative choices in model}
 }
 \description{
 Conditional logit likelihood

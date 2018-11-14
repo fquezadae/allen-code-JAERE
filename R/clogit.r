@@ -1,10 +1,11 @@
-clogit <- function(starts3,dat,alts,otherdat) {
+clogit <- function(starts3,dat,otherdat,alts) {
 #' clogit
 #'
 #' Conditional logit likelihood
 #'
 #' @param starts3 Starting values
-#' @param d Data matrix, see output from shiftSortX
+#' @param dat Data matrix, see output from shiftSortX, alternatives with distance by column bind
+#' @param otherdat Other data used in model
 #' @param alts Number of alternative choices in model
 #' @keywords fish
 #' @export

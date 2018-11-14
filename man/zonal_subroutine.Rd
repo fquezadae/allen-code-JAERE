@@ -4,17 +4,19 @@
 \alias{zonal_subroutine}
 \title{zonal_subroutine}
 \usage{
-zonal_subroutine(modelInputData, dataCompile, betain, altcoeff, optimOpt,
-  func, otherdat)
+zonal_subroutine(catch, choice, distance, otherdat, initparams, optimOpt,
+  func)
 }
 \arguments{
-\item{modelInputData}{Information on model preference and parameters as LIST}
+\item{catch}{Data corresponding to actual zonal choice}
 
-\item{dataCompile}{Data matrix from make_logit_input function as MATRIX}
+\item{choice}{Data corresponding to actual catch}
 
-\item{betain}{Initial parameter estimates for cost/distance}
+\item{distance}{Data corresponding to distance}
 
-\item{altcoeff}{Initial parameter estimates for revenue/location-specific covariates}
+\item{otherdat}{Other data}
+
+\item{initparams}{Initial parameter estimates for revenue/location-specific covariates then cost/distance}
 
 \item{optimOpt}{Optimization options [max function evaluations, max iterations, (reltol) tolerance of x]}
 
