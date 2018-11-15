@@ -4,11 +4,9 @@ create_logit_input <- function(choice) {
 #' Creates a data matrix that is consistent with the built in model forms
 #'
 #' @param choice A (number of observations) x 1 vector of chosen locations
-#' @keywords fish
-#' @export
+#' @return dataCompile - a data matrix
 #' @examples
-#' outputs:
-#' dataCompile - a data matrix
+#'
 
 x9 <- diag(max(choice)); # makes matrix of choice possibilites
 x8 <- matrix(x9, 1, max(choice)*max(choice))

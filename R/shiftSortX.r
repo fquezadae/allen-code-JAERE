@@ -9,11 +9,9 @@ shiftSortX <- function(x,ch,y,distance,alts,ab) {
 #' @param distance Data corresponding to distance
 #' @param alts Number of alternative choices in model
 #' @param ab Number of cost parameters + number of alts
-#' @keywords fish
-#' @export
-#' @examples
-#' outputs:
-#' d - matrix of choice possibilites and distance
+#' @return d - matrix of choice possibilites and distance
+#' @examples 
+#'
 
 ch0 <- ch-1
 n <- max(dim(ch))

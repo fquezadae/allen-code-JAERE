@@ -15,11 +15,12 @@ clogit(starts3, dat, otherdat, alts)
 
 \item{alts}{Number of alternative choices in model}
 }
+\value{
+ld - negative log likelihood
+}
 \description{
 Conditional logit likelihood
 }
 \examples{
-outputs:
-ld - negative log likelihood
+
 }
-\keyword{fish}

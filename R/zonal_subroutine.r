@@ -10,15 +10,14 @@ zonal_subroutine <- function(catch,choice,distance,otherdat,initparams,optimOpt,
 #' @param initparams Initial parameter estimates for revenue/location-specific covariates then cost/distance
 #' @param optimOpt Optimization options [max function evaluations, max iterations, (reltol) tolerance of x]
 #' @param func Name of likelihood function
-#' @keywords fish
-#' @export
+#' @return
+#' OutLogit - [outmat1 se1 tEPM2] (coefs, ses, tstats) \cr 
+#' clogitoutput - optimization information \cr 
+#' seoumat2 - ses \cr 
+#' MCM - Model Comparison metrics \cr 
+#' H1 - inverse hessian \cr 
 #' @examples
-#' outputs:
-#' OutLogit - [outmat1 se1 tEPM2] (coefs, ses, tstats)
-#' clogitoutput - optimization information
-#' seoumat2 - ses
-#' MCM - Model Comparison metrics
-#' H1 - inverse hessian
+#'
 
 errorExplain <- NULL
 OutLogit <- NULL

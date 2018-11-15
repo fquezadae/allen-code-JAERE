@@ -1,0 +1,67 @@
+---
+title: "Barebones FishSET Vignette"
+author: "Fishy McFisherperson"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+Runs discrete choice models.
+
+- User supplies `catch`, `choice`, and `distance` data, plus any other data (`otherdat`) they need to run their chosen likelihood.
+- Currently ships with a conditional logit function `clogit`.
+
+## To run models call the `zonal_subroutine` function
+
+The user supplies `catch`, `choice`, and `distance` data. The data `catch` and `choice` should be data frames with dimensions (number of observations) x 1.
+The distance data should be a data frame with dimensions (number of observations) x (number of alternatives).
+Other data may be something like predicted catch for each alternative (e.g. a data frame with dimensions (number of observations) x (number of alternatives)).
+The user supplies initial parameters, optimization options and the likelihood function name, for a total of 7 total inputs.
+
+func <- clogit #function(starts3,dat,otherdat,alts) starting params, dataCompile, otherdat = other data used in likelihood (predicted catches), alts
+
+
+    For example:  
+      initparams <- c(2.5, -0.8) #Initial paramters for revenue then cost.
+		optimOpt <- c(100000,1000000,1.00000000000000e-06) #Optimization options for the maximum number of function evaluations, maximum iterations, and the relative tolerance of x.
+		func <- clogit #The conditional logit likelihood function.
+		
+## Figures
+
+The figure sizes have been customised so that you can easily put two images side-by-side. 
+
+```{r, fig.show='hold'}
+plot(1:10)
+plot(10:1)
+```
+
+You can enable figure captions by `fig_caption: yes` in YAML:
+
+    output:
+      rmarkdown::html_vignette:
+        fig_caption: yes
+
+Then you can use the chunk option `fig.cap = "Your figure caption."` in **knitr**.
+
+## More Examples
+
+You can write math expressions, e.g. $Y = X\beta + \epsilon$, footnotes^[A footnote here.], and tables, e.g. using `knitr::kable()`.
+
+```{r, echo=FALSE, results='asis'}
+knitr::kable(head(mtcars, 10))
+```
+
+Also a quote using `>`:
+
+> "He who gives up [code] safety for [code] speed deserves neither."
+([via](https://twitter.com/hadleywickham/status/504368538874703872))

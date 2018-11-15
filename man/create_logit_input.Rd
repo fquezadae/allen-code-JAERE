@@ -9,11 +9,12 @@ create_logit_input(choice)
 \arguments{
 \item{choice}{A (number of observations) x 1 vector of chosen locations}
 }
+\value{
+dataCompile - a data matrix
+}
 \description{
 Creates a data matrix that is consistent with the built in model forms
 }
 \examples{
-outputs:
-dataCompile - a data matrix
+
 }
-\keyword{fish}

@@ -22,15 +22,16 @@ zonal_subroutine(catch, choice, distance, otherdat, initparams, optimOpt,
 
 \item{func}{Name of likelihood function}
 }
+\value{
+OutLogit - [outmat1 se1 tEPM2] (coefs, ses, tstats) \cr 
+clogitoutput - optimization information \cr 
+seoumat2 - ses \cr 
+MCM - Model Comparison metrics \cr 
+H1 - inverse hessian \cr
+}
 \description{
 Subroutine to run chosen discrete choice model
 }
 \examples{
-outputs:
-OutLogit - [outmat1 se1 tEPM2] (coefs, ses, tstats)
-clogitoutput - optimization information
-seoumat2 - ses
-MCM - Model Comparison metrics
-H1 - inverse hessian
+
 }
-\keyword{fish}

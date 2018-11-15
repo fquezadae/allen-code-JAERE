@@ -7,11 +7,9 @@ clogit <- function(starts3,dat,otherdat,alts) {
 #' @param dat Data matrix, see output from shiftSortX, alternatives with distance by column bind
 #' @param otherdat Other data used in model
 #' @param alts Number of alternative choices in model
-#' @keywords fish
-#' @export
+#' @return ld - negative log likelihood
 #' @examples
-#' outputs:
-#' ld - negative log likelihood
+#'
 
 ld1 <- list()
 starts3 <- as.matrix(starts3)
