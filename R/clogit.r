@@ -8,6 +8,7 @@ clogit <- function(starts3,dat,otherdat,alts) {
 #' @param otherdat Other data used in model
 #' @param alts Number of alternative choices in model
 #' @return ld - negative log likelihood
+#' @export
 #' @examples
 #'
 

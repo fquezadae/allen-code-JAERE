@@ -16,6 +16,7 @@ zonal_subroutine <- function(catch,choice,distance,otherdat,initparams,optimOpt,
 #' seoumat2 - ses \cr 
 #' MCM - Model Comparison metrics \cr 
 #' H1 - inverse hessian \cr 
+#' @export
 #' @examples
 #'
 

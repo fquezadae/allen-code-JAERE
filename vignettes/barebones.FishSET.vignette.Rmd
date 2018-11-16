@@ -1,10 +1,10 @@
 ---
 title: "Barebones FishSET Vignette"
-author: "Fishy McFisherperson"
+author: "Fishy McFishperson"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteIndexEntry{Barebones FishSET Vignette}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -18,50 +18,76 @@ knitr::opts_chunk$set(
 
 Runs discrete choice models.
 
-- User supplies `catch`, `choice`, and `distance` data, plus any other data (`otherdat`) they need to run their chosen likelihood.
+- User supplies `catch`, `choice`, and `distance` data, plus any other data `otherdat` they need to run their chosen likelihood.
 - Currently ships with a conditional logit function `clogit`.
+
+## Data
+The user supplies `catch`, `choice`, and `distance` data. The data `catch` and `choice` should be data frames with dimensions (*number of observations*) x 1.
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+zi <- read.csv("zi.csv", header=FALSE)
+catch <- read.csv("catch.csv", header=FALSE)
+choice <- read.csv("choice.csv", header=FALSE)
+predicted_catch <- read.csv("otherdat.csv", header=FALSE)
+distance <- read.csv("distance.csv", header=FALSE)
+otherdat <- list(predicted_catch=predicted_catch, zi=zi)
+library(barebones.FishSET)
+```
+```{r, echo=TRUE}
+str(catch)
+str(choice)
+```
+
+The `distance` data should be a data frame with dimensions (*number of observations*) x (*number of alternatives*).
+
+```{r, echo=TRUE}
+str(distance)
+```
+
+Other data may be something like `predicted_catch` for each alternative (e.g. a data frame with dimensions (*number of observations*) x (*number of alternatives*)). 
+This data is constructed by the user before estimation of the discrete choice model, for example by looking at a moving average of historical catches. 
+Below are predicted catches based a regression using vessel and location covariates, as well as a data frame `zi` representing harvester characteristics.
+```{r, echo=TRUE}
+str(otherdat)
+```
 
 ## To run models call the `zonal_subroutine` function
 
-The user supplies `catch`, `choice`, and `distance` data. The data `catch` and `choice` should be data frames with dimensions (number of observations) x 1.
-The distance data should be a data frame with dimensions (number of observations) x (number of alternatives).
-Other data may be something like predicted catch for each alternative (e.g. a data frame with dimensions (number of observations) x (number of alternatives)).
 The user supplies initial parameters, optimization options and the likelihood function name, for a total of 7 total inputs.
-
-func <- clogit #function(starts3,dat,otherdat,alts) starting params, dataCompile, otherdat = other data used in likelihood (predicted catches), alts
-
 
     For example:  
       initparams <- c(2.5, -0.8) #Initial paramters for revenue then cost.
-		optimOpt <- c(100000,1000000,1.00000000000000e-06) #Optimization options for the maximum number of function evaluations, maximum iterations, and the relative tolerance of x.
-		func <- clogit #The conditional logit likelihood function.
-		
-## Figures
-
-The figure sizes have been customised so that you can easily put two images side-by-side. 
-
-```{r, fig.show='hold'}
-plot(1:10)
-plot(10:1)
-```
-
-You can enable figure captions by `fig_caption: yes` in YAML:
-
-    output:
-      rmarkdown::html_vignette:
-        fig_caption: yes
-
-Then you can use the chunk option `fig.cap = "Your figure caption."` in **knitr**.
-
-## More Examples
-
-You can write math expressions, e.g. $Y = X\beta + \epsilon$, footnotes^[A footnote here.], and tables, e.g. using `knitr::kable()`.
+	  optimOpt <- c(100000,1000000,1.00000000000000e-06) #Optimization options for the maximum number of 
+					function evaluations, maximum iterations, and the relative tolerance of x.
+	  func <- clogit #The conditional logit likelihood function.
 
 ```{r, echo=FALSE, results='asis'}
-knitr::kable(head(mtcars, 10))
+otherdat <- read.csv("otherdat.csv", header=FALSE)
+distance <- read.csv("distance.csv", header=FALSE)
+zi <- read.csv("zi.csv", header=FALSE)
+distance <- distance*cbind(zi,zi,zi,zi)
+initparams <- c(2.5, -0.8) #revenue then cost
+optimOpt <- c(100000,1000000,1.00000000000000e-06) #optim options for optim
+func <- clogit 
 ```
 
-Also a quote using `>`:
+The subroutine function takes in 7 inputs and outputs model results in a list that can be summarized as:
 
-> "He who gives up [code] safety for [code] speed deserves neither."
-([via](https://twitter.com/hadleywickham/status/504368538874703872))
+	errorExplain - If it exists, a description of the model error.
+	OutLogit - A matrix of coefficients, standard errors, and t-statistics 
+	clogitoutput - Optimization information (such as number of function iterations)
+	seoumat2 - Standard errors
+	MCM - Model Comparison metrics (e.g. AIC, BIC)
+	H1 - The inverse hessian 
+	
+```{r, echo=TRUE}
+results <- zonal_subroutine(catch,choice,distance,otherdat,initparams,optimOpt,func)
+results
+```
+
+The true marginal utility from catch in this data-generating process was equal to 3, and the true disutility from distance was equal to -1. 
+The model estimates are correct relative to some unknown scale parameter:
+
+```{r, echo=TRUE}
+results$OutLogit[1,1]/results$OutLogit[2,1]
+```

@@ -10,6 +10,7 @@ shiftSortX <- function(x,ch,y,distance,alts,ab) {
 #' @param alts Number of alternative choices in model
 #' @param ab Number of cost parameters + number of alts
 #' @return d - matrix of choice possibilites and distance
+#' @export
 #' @examples 
 #'
 
