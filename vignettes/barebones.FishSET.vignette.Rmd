@@ -22,7 +22,7 @@ Runs discrete choice models.
 - Currently ships with a conditional logit function `clogit`.
 
 ## Data
-The user supplies `catch`, `choice`, and `distance` data. The data `catch` and `choice` should be data frames with dimensions (*number of observations*) x 1.
+The user supplies `catch`, `choice`, and `distance` data. The data `catch` and `choice` should be data frames with dimensions *(number of observations) x 1*.
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 zi <- read.csv("zi.csv", header=FALSE)
@@ -38,13 +38,13 @@ str(catch)
 str(choice)
 ```
 
-The `distance` data should be a data frame with dimensions (*number of observations*) x (*number of alternatives*).
+The `distance` data should be a data frame with dimensions *(number of observations) x (number of alternatives)*.
 
 ```{r, echo=TRUE}
 str(distance)
 ```
 
-Other data may be something like `predicted_catch` for each alternative (e.g. a data frame with dimensions (*number of observations*) x (*number of alternatives*)). 
+Other data may be something like `predicted_catch` for each alternative (e.g. a data frame with dimensions *(number of observations) x (number of alternatives)*). 
 This data is constructed by the user before estimation of the discrete choice model, for example by looking at a moving average of historical catches. 
 Below are predicted catches based a regression using vessel and location covariates, as well as a data frame `zi` representing harvester characteristics.
 ```{r, echo=TRUE}

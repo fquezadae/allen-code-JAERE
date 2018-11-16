@@ -10,11 +10,7 @@ If you run into problems you can contact allen.chen@noaa.gov
 To install with vignette:
 
     > install.packages("devtools")
-    > install.packages("roxygen2")
-    > install.packages("rmarkdown")
 	> library(devtools)
-    > library(roxygen2)
-    > library(rmarkdown)
 	
 Set the directory you've downloaded the package into:
 
