@@ -25,4 +25,4 @@ Check out documentation and vignette:
     > help(package="barebones.FishSET")
     > vignette("barebones.FishSET.vignette", package="barebones.FishSET")
 
-Please see vignette for usage examples.
+Please see vignette for usage examples. Test new SSH
