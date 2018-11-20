@@ -14,7 +14,7 @@ zonal_subroutine(catch, choice, distance, otherdat, initparams, optimOpt,
 
 \item{distance}{Data corresponding to distance}
 
-\item{otherdat}{Other data}
+\item{otherdat}{Other data (as a list)}
 
 \item{initparams}{Initial parameter estimates for revenue/location-specific covariates then cost/distance}
 

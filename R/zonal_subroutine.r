@@ -6,7 +6,7 @@ zonal_subroutine <- function(catch,choice,distance,otherdat,initparams,optimOpt,
 #' @param catch Data corresponding to actual zonal choice
 #' @param choice Data corresponding to actual catch
 #' @param distance Data corresponding to distance
-#' @param otherdat Other data
+#' @param otherdat Other data (as a list)
 #' @param initparams Initial parameter estimates for revenue/location-specific covariates then cost/distance
 #' @param optimOpt Optimization options [max function evaluations, max iterations, (reltol) tolerance of x]
 #' @param func Name of likelihood function

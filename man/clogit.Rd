@@ -11,7 +11,7 @@ clogit(starts3, dat, otherdat, alts)
 
 \item{dat}{Data matrix, see output from shiftSortX, alternatives with distance by column bind}
 
-\item{otherdat}{Other data used in model}
+\item{otherdat}{Other data used in model (as list)}
 
 \item{alts}{Number of alternative choices in model}
 }

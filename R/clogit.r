@@ -5,7 +5,7 @@ clogit <- function(starts3,dat,otherdat,alts) {
 #'
 #' @param starts3 Starting values
 #' @param dat Data matrix, see output from shiftSortX, alternatives with distance by column bind
-#' @param otherdat Other data used in model
+#' @param otherdat Other data used in model (as list)
 #' @param alts Number of alternative choices in model
 #' @return ld - negative log likelihood
 #' @export
@@ -14,13 +14,14 @@ clogit <- function(starts3,dat,otherdat,alts) {
 
 ld1 <- list()
 starts3 <- as.matrix(starts3)
-otherdat <- as.matrix(otherdat)
+pred_catch <- as.matrix(otherdat$predicted_catch)
 
 for(i in 1:dim(dat)[1])
 {
 
-betas1 <- c((starts3[1,]*otherdat[i,]), as.matrix(starts3[2,]))
+betas1 <- c((starts3[1,]*pred_catch[i,]), as.matrix(starts3[2,]))
 betas <- t(as.matrix(betas1))
+betas[,dim(betas)[2]] <- betas[,dim(betas)[2]]*otherdat$zi[i,]
 
 djz <- t(dat[i,3:dim(dat)[2]])
 
