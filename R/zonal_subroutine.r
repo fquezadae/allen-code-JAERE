@@ -28,16 +28,13 @@ MCM <- NULL
 H1 <- NULL
 fr <- func #e.g. clogit
 
-betain <- as.matrix(initparams[(length(initparams)-(dim(distance)[2]/max(choice))+1):length(initparams)]) #distance params
-altcoeff <- initparams[1:(length(initparams)-(dim(distance)[2]/max(choice)))] #catch params
-
 ab <- max(choice) + 1 #no interactions in create_logit_input - interact distances in likelihood function instead
 dataCompile <- create_logit_input(choice)
 
 d <- shiftSortX(dataCompile,choice,catch,distance,max(choice),ab)
 
 MCR <- 1
-starts2 <- c(altcoeff,betain)
+starts2 <- initparams
 
 LL_start <- fr(starts2,d,otherdat,max(choice))
 

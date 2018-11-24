@@ -37,7 +37,11 @@ predicted_catch <- read.csv("predicted_catch.csv", header=FALSE)
 predicted_catch$V3 <- as.numeric(predicted_catch$V3)
 
 distance <- read.csv("distance.csv", header=FALSE)
-otherdat <- list(predicted_catch=predicted_catch, zi=zi)
+
+griddatfin <- list(predicted_catch=predicted_catch)
+intdatfin <- list(zi=zi)
+otherdat <- list(griddat=griddatfin,intdat=intdatfin)
+
 library(barebones.FishSET)
 ```
 (Simulated catch and choice data are included in this package e.g. `data(catch)`.)
@@ -70,11 +74,6 @@ initparams <- c(2.5, -0.8) #Initial paramters for revenue then cost.
 optimOpt <- c(100000,1000000,1.00000000000000e-06) #Optimization options for the maximum number of
 					   #function evaluations, maximum iterations, and the relative tolerance of x.
 func <- clogit #The conditional logit likelihood function.
-```
-```{r, echo=FALSE, results='asis'}
-initparams <- c(2.5, -0.8) #revenue then cost
-optimOpt <- c(100000,1000000,1.00000000000000e-06) #optim options for optim
-func <- clogit 
 ```
 
 The subroutine function takes in 7 inputs and outputs model results in a list that can be summarized as:

@@ -13,15 +13,19 @@ clogit <- function(starts3,dat,otherdat,alts) {
 #'
 
 ld1 <- list()
+griddat <- (otherdat$griddat)
+intdat <- (otherdat$intdat)
+
 starts3 <- as.matrix(starts3)
-pred_catch <- as.matrix(otherdat$predicted_catch)
+gridcoef <- as.matrix(starts3[1:length(intdat),])
+intcoef <- as.matrix(starts3[((length(griddat)+length(intdat))-length(gridcoef)+1):(length(griddat)+length(intdat)),])
 
 for(i in 1:dim(dat)[1])
 {
 
-betas1 <- c((starts3[1,]*pred_catch[i,]), as.matrix(starts3[2,]))
+betas1 <- c(t(as.matrix(do.call(rbind,lapply(griddat,`[`,i,))))%*%as.matrix(gridcoef), 
+			t(as.matrix(do.call(rbind,lapply(intdat,`[`,i,))))%*%as.matrix(intcoef))
 betas <- t(as.matrix(betas1))
-betas[,dim(betas)[2]] <- betas[,dim(betas)[2]]*otherdat$zi[i,]
 
 djz <- t(dat[i,3:dim(dat)[2]])
 
