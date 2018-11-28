@@ -26,3 +26,8 @@ Check out documentation and vignette:
     > vignette("barebones.FishSET.vignette", package="barebones.FishSET")
 
 Please see vignette for usage examples.
+
+You can create a stand-alone .html vignette by then running:
+
+	> setwd("barebones.FishSET")
+	> devtools::build_vignettes()
