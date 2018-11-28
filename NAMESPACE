@@ -2,5 +2,6 @@
 
 export(clogit)
 export(create_logit_input)
+export(logit_zone_avgcat)
 export(shiftSortX)
 export(zonal_subroutine)

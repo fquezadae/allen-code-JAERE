@@ -19,7 +19,7 @@ knitr::opts_chunk$set(
 Runs discrete choice models.
 
 - User supplies `catch`, `choice`, and `distance` data, plus any other data `otherdat` they need to run their chosen likelihood.
-- Currently ships with a conditional logit function `clogit`.
+- Currently ships with a conditional logit function `clogit`, and an average catch logit function `logit_zone_avgcat`.
 
 ## Data
 The user supplies `catch`, `choice`, and `distance` data. The data `catch` and `choice` should be data frames with dimensions *(number of observations) x 1*.
@@ -68,8 +68,11 @@ For the `clogit` function, any number of grid-varying variables (e.g. expected c
 variables (e.g. vessel characteristics that affect how much disutility is suffered by traveling a greater distance) are allowed. 
 However, the user must place these in `otherdat` as list objects named `griddat` and `intdat` respectively. Note the variables 
 within `griddat` and `intdat` have no naming restrictions. Also note that `griddat` variables have columns equal to the *number of alternatives*, 
-while `intdat` variables are dimension *1*, to be interacted with the distance to each alternative. Finally, users can write their own likelihoods, 
-and this example is specific to the package-supplied conditional logit (`clogit`) function.
+while `intdat` variables are dimension *(number of alternatives) x 1*, to be interacted with the distance to each alternative.  
+
+If there are no other data, the user can set `griddat` as ones with dimension *(number of observations) x (number of alternatives)* and `intdat` 
+variables as ones with dimension *(number of observations) x 1*. Finally, users can write their own likelihoods, and this example is 
+specific to the package-supplied conditional logit (`clogit`) function.
 
 ## To run models call the `zonal_subroutine` function
 
