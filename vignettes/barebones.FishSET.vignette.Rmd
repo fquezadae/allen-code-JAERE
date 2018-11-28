@@ -59,10 +59,17 @@ str(distance)
 Other data may be something like `predicted_catch` for each alternative (e.g. a data frame with dimensions *(number of observations) x (number of alternatives)*). 
 This data is constructed by the user before estimation of the discrete choice model, for example by looking at a moving average of historical catches. 
 Below are predicted catches based a regression using vessel and location covariates, as well as a data frame `zi` representing harvester characteristics. 
-(Simulated harvester characteristics and predicted data are included in this package e.g. `data(otherdat)`.)
+(Simulated harvester characteristics and predicted data are included in this package e.g. `data(predicted_catch)`.)
 ```{r, echo=TRUE}
 str(otherdat)
 ```
+
+For the `clogit` function, any number of grid-varying variables (e.g. expected catch that varies by location) or interaction 
+variables (e.g. vessel characteristics that affect how much disutility is suffered by traveling a greater distance) are allowed. 
+However, the user must place these in `otherdat` as list objects named `griddat` and `intdat` respectively. Note the variables 
+within `griddat` and `intdat` have no naming restrictions. Also note that `griddat` variables have columns equal to the *number of alternatives*, 
+while `intdat` variables are dimension *1*, to be interacted with the distance to each alternative. Finally, users can write their own likelihoods, 
+and this example is specific to the package-supplied conditional logit (`clogit`) function.
 
 ## To run models call the `zonal_subroutine` function
 
