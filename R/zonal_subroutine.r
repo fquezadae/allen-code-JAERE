@@ -12,7 +12,7 @@ zonal_subroutine <- function(catch,choice,distance,otherdat,initparams,optimOpt,
 #' @param func Name of likelihood function
 #' @return
 #' OutLogit - [outmat1 se1 tEPM2] (coefs, ses, tstats) \cr 
-#' clogitoutput - optimization information \cr 
+#' optoutput - optimization information \cr 
 #' seoumat2 - ses \cr 
 #' MCM - Model Comparison metrics \cr 
 #' H1 - inverse hessian \cr 
@@ -22,7 +22,7 @@ zonal_subroutine <- function(catch,choice,distance,otherdat,initparams,optimOpt,
 
 errorExplain <- NULL
 OutLogit <- NULL
-clogitoutput <- NULL
+optoutput <- NULL
 seoutmat2 <- NULL
 MCM <- NULL
 H1 <- NULL
@@ -86,13 +86,13 @@ se2 <- sqrt(diag2)
 
 outmat2 <- t(q2)
 seoutmat2 <- t(se2)
-clogitoutput <- output
+optoutput <- output
 tLogit <- t(outmat2/se2)
 OutLogit <- cbind(t(outmat2), as.matrix(se2), (tLogit))
 }
 
 #############################################################################
 
-return(list(errorExplain=errorExplain,OutLogit=OutLogit,clogitoutput=clogitoutput,seoutmat2=seoutmat2,MCM=MCM,H1=H1))
+return(list(errorExplain=errorExplain,OutLogit=OutLogit,optoutput=optoutput,seoutmat2=seoutmat2,MCM=MCM,H1=H1))
 
 }

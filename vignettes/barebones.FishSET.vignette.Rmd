@@ -90,9 +90,9 @@ The subroutine function takes in 7 inputs and outputs model results in a list th
 
 	errorExplain - If it exists, a description of the model error.
 	OutLogit - A matrix of coefficients, standard errors, and t-statistics 
-	clogitoutput - Optimization information (such as number of function iterations)
-	seoumat2 - Standard errors
-	MCM - Model Comparison metrics (e.g. AIC, BIC)
+	optoutput - Optimization information (such as number of function iterations)
+	seoutmat2 - Standard errors
+	MCM - Model comparison metrics (e.g. AIC, BIC)
 	H1 - The inverse hessian 
 	
 ```{r, echo=TRUE}

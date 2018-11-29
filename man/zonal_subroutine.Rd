@@ -24,7 +24,7 @@ zonal_subroutine(catch, choice, distance, otherdat, initparams, optimOpt,
 }
 \value{
 OutLogit - [outmat1 se1 tEPM2] (coefs, ses, tstats) \cr 
-clogitoutput - optimization information \cr 
+optoutput - optimization information \cr 
 seoumat2 - ses \cr 
 MCM - Model Comparison metrics \cr 
 H1 - inverse hessian \cr
