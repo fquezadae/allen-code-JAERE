@@ -3,13 +3,16 @@ logit_zone_avgcat <- function(starts3,dat,otherdat,alts) {
 #'
 #' Average catch conditional logit procedure
 #'
-#' @param starts3 Starting values with dimensions equal to number of alternatives + 1
+#' @param starts3 Starting values with dimensions equal to (number of alternatives - 1)*(number of grid-varying variables) + (number of interactions).
+#' Recall the user must drop one alternative for identification.
 #' @param dat Data matrix, see output from shiftSortX, alternatives with distance by column bind
-#' @param otherdat Other data used in model (as list). Any number of interaction variables (e.g. vessel characteristics that affect 
-#' how much disutility is suffered by traveling a greater distance) are allowed. However, the user must place these in `otherdat` 
-#' as list objects named `intdat` respectively. Note the variables within `intdat` have no naming restrictions. 
-#' Also note that `intdat` variables are dimension *(number of observations) x 1*, to be interacted with the distance to each alternative.
-#' If there are no other data, the user can set `intdat` variables as ones with dimension *(number of observations) x 1*.
+#' @param otherdat Other data used in model (as list). Any number of grid-varying variables (e.g. variables that affect catches across locations) or 
+#' interaction variables (e.g. vessel characteristics that affect how much disutility is suffered by traveling a greater distance) are allowed. 
+#' However, the user must place these in `otherdat` as list objects named `griddat` and `intdat` respectively. Note the variables
+#' within `griddat` and `intdat` have no naming restrictions. Also note that `griddat` variables are dimension *(number of observations) x 1*,
+#' to be interacted with each alternative, while `intdat` variables are dimension *(number of observations) x 1*, to be interacted with the 
+#' distance to each alternative. If there are no other data, the user can set `griddat` as ones with dimension *(number of observations) x 
+#' (number of alternatives)* and `intdat` variables as ones with dimension *(number of observations) x 1*.
 #' @param alts Number of alternative choices in model
 #' @return ld - negative log likelihood
 #' @export
@@ -18,15 +21,16 @@ logit_zone_avgcat <- function(starts3,dat,otherdat,alts) {
 
 ld1 <- list()
 intdat <- (otherdat$intdat)
+griddat <- (otherdat$griddat)
 
 starts3 <- as.matrix(starts3)
-gridcoef <- as.matrix(starts3[1:(alts-1),])
-intcoef <- as.matrix(starts3[alts:(alts-1+length(intdat)),])
+gridcoef <- as.matrix(starts3[1:(length(griddat)*(alts-1)),])
+intcoef <- as.matrix(starts3[((length(griddat)*(alts-1))+1):(((length(griddat)*(alts-1)))+length(intdat)),])
 
 for(i in 1:dim(dat)[1])
 {
 
-betas1 <- c(as.matrix(gridcoef), 
+betas1 <- c(matrix(as.matrix(gridcoef),(alts-1),length(griddat))%*%(as.matrix(do.call(rbind,lapply(griddat,`[`,i,)))),
 			t(as.matrix(do.call(rbind,lapply(intdat,`[`,i,))))%*%as.matrix(intcoef))
 betas <- t(as.matrix(betas1))
 

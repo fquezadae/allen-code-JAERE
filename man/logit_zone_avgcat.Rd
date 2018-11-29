@@ -7,15 +7,18 @@
 logit_zone_avgcat(starts3, dat, otherdat, alts)
 }
 \arguments{
-\item{starts3}{Starting values with dimensions equal to number of alternatives + 1}
+\item{starts3}{Starting values with dimensions equal to (number of alternatives - 1)*(number of grid-varying variables) + (number of interactions).
+Recall the user must drop one alternative for identification.}
 
 \item{dat}{Data matrix, see output from shiftSortX, alternatives with distance by column bind}
 
-\item{otherdat}{Other data used in model (as list). Any number of interaction variables (e.g. vessel characteristics that affect 
-how much disutility is suffered by traveling a greater distance) are allowed. However, the user must place these in `otherdat` 
-as list objects named `intdat` respectively. Note the variables within `intdat` have no naming restrictions. 
-Also note that `intdat` variables are dimension *(number of observations) x 1*, to be interacted with the distance to each alternative.
-If there are no other data, the user can set `intdat` variables as ones with dimension *(number of observations) x 1*.}
+\item{otherdat}{Other data used in model (as list). Any number of grid-varying variables (e.g. variables that affect catches across locations) or 
+interaction variables (e.g. vessel characteristics that affect how much disutility is suffered by traveling a greater distance) are allowed. 
+However, the user must place these in `otherdat` as list objects named `griddat` and `intdat` respectively. Note the variables
+within `griddat` and `intdat` have no naming restrictions. Also note that `griddat` variables are dimension *(number of observations) x 1*,
+to be interacted with each alternative, while `intdat` variables are dimension *(number of observations) x 1*, to be interacted with the 
+distance to each alternative. If there are no other data, the user can set `griddat` as ones with dimension *(number of observations) x 
+(number of alternatives)* and `intdat` variables as ones with dimension *(number of observations) x 1*.}
 
 \item{alts}{Number of alternative choices in model}
 }
