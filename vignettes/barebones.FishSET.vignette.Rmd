@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-Runs discrete choice models.
+Runs discrete choice models. If you If you run into problems you can contact allen.chen@noaa.gov.
 
 - User supplies `catch`, `choice`, and `distance` data, plus any other data `otherdat` they need to run their chosen likelihood.
 - Currently ships with a conditional logit function `clogit`, and an average catch logit function `logit_zone_avgcat`.
