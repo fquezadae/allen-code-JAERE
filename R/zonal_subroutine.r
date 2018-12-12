@@ -56,10 +56,15 @@ optim(starts2, fr, dat=d, otherdat=otherdat, alts=max(choice), control = control
 
 }, error = function(e) {
 
-    errorExplain <- "Optimization error"
-    return("Optimization error") 
+    return("Optimization error, check 'ldglobalcheck'") 
 	
 })
+
+if (res == "Optimization error, check 'ldglobalcheck'") {
+
+	return(list(errorExplain=res,OutLogit=OutLogit,optoutput=optoutput,seoutmat2=seoutmat2,MCM=MCM,H1=H1))
+	
+}
 
 q2 <- res[["par"]]
 LL <- res[["value"]]

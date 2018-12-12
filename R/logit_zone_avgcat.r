@@ -45,6 +45,8 @@ ld1[[i]] <- (-log(t(exb)%*%(rep(1, alts))))
 
 }
 
+ldglobalcheck <<- unlist(as.matrix(ld1))
+
 ld <- (-do.call("sum", ld1))
 
 return(ld)
