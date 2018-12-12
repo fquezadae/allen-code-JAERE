@@ -1,7 +1,7 @@
-clogit <- function(starts3,dat,otherdat,alts) {
-#' clogit
+epm_weibull <- function(starts3,dat,otherdat,alts) {
+#' epm_weibull
 #'
-#' Conditional logit likelihood
+#' Expected profit model weibull catch function
 #'
 #' @param starts3 Starting values
 #' @param dat Data matrix, see output from shiftSortX, alternatives with distance by column bind
@@ -19,17 +19,26 @@ clogit <- function(starts3,dat,otherdat,alts) {
 #'
 
 ld1 <- list()
-griddat <- (otherdat$griddat) #this is a list
+griddat <- (otherdat$griddat) #should be ones here
 intdat <- (otherdat$intdat)
+pricedat <- (otherdat$pricedat)
 
 starts3 <- as.matrix(starts3)
-gridcoef <- as.matrix(starts3[1:length(griddat),])
-intcoef <- as.matrix(starts3[((length(griddat)+length(intdat))-length(intdat)+1):(length(griddat)+length(intdat)),])
+gridcoef <- as.matrix(starts3[1:(length(griddat)*alts),]) #lambda
+# gridcoef <- as.matrix(starts3[1:alts,])
+
+intcoef <- as.matrix(starts3[(((length(griddat)*alts)+length(intdat))-length(intdat)+1):((length(griddat)*alts)+length(intdat)),])
+# intcoef <- as.matrix(starts3[((alts+length(intdat))-length(intdat)+1):(alts+length(intdat)),])
+
+k <- as.matrix(starts3[((length(griddat)*alts)+length(intdat)+1),])
+sigmac <- as.matrix(starts3[((length(griddat)*alts)+length(intdat)+2),]) #should be end
 
 for(i in 1:dim(dat)[1])
 {
 
-betas1 <- c(t(as.matrix(do.call(rbind,lapply(griddat,`[`,i,))))%*%as.matrix(gridcoef), 
+expgridcoef <- gridcoef*gamma(1 + (1/k))
+
+betas1 <- c(t(as.matrix(do.call(rbind,lapply(griddat,`[`,i,)))*t(expgridcoef))%*%as.matrix(pricedat[i,]), 
 			t(as.matrix(do.call(rbind,lapply(intdat,`[`,i,))))%*%as.matrix(intcoef))
 betas <- t(as.matrix(betas1))
 
@@ -39,8 +48,22 @@ dj <- matrix(djz, nrow = alts, ncol = dim(betas)[2])
 
 xb <- dj%*%t(betas)
 xb <- xb - xb[1]
-exb <- exp(xb)
-ld1[[i]] <- (-log(t(exb)%*%(rep(1, alts))))
+exb <- exp(xb/matrix(sigmac,length(xb),1))
+
+ldchoice <- (-log(t(exb)%*%(rep(1, alts))))
+
+yj <- dat[i,1]
+cj <- dat[i,2]
+
+#you should probably check this likelihood, copied from FishSET
+ldcatch0 <- log(k)
+ldcatch1 <- (-(k)*log(gridcoef[cj,]))
+ldcatch2 <- (k-1)*log(yj)
+ldcatch3 <- (-((yj/gridcoef[cj,])^k))
+			
+ldcatch <- ldcatch0 + ldcatch1 + ldcatch2 + ldcatch3
+			
+ld1[[i]] <- ldcatch + ldchoice
 
 }
 
