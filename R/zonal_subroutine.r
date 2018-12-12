@@ -60,7 +60,7 @@ optim(starts2, fr, dat=d, otherdat=otherdat, alts=max(choice), control = control
 	
 })
 
-if (res == "Optimization error, check 'ldglobalcheck'") {
+if (res[[1]] == "Optimization error, check 'ldglobalcheck'") {
 
 	return(list(errorExplain=res,OutLogit=OutLogit,optoutput=optoutput,seoutmat2=seoutmat2,MCM=MCM,H1=H1))
 	
@@ -85,8 +85,27 @@ PseudoR2 <- (LL_start-LL)/LL_start
 MCM <- list(AIC=AIC, AICc=AICc, BIC=BIC, PseudoR2=PseudoR2)
 
 if (is.null(H) == FALSE){
-H1 <- solve(H)
-diag2 <- diag(H1)
+
+H1 <- tryCatch({
+
+solve(H)
+
+}, error = function(e) {
+
+    return("Error, singular") 
+	
+})
+
+diag2 <- tryCatch({
+
+diag(H1)
+
+}, error = function(e) {
+
+    return("Error, NAs") 
+	
+})
+
 se2 <- sqrt(diag2)
 
 outmat2 <- t(q2)
