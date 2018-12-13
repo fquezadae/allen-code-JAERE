@@ -1,5 +1,5 @@
-logit_zone_avgcat <- function(starts3,dat,otherdat,alts) {
-#' logit_zone_avgcat
+logit_avgcat <- function(starts3,dat,otherdat,alts) {
+#' logit_avgcat
 #'
 #' Average catch conditional logit procedure
 #'

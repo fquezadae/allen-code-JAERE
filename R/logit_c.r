@@ -1,5 +1,5 @@
-clogit <- function(starts3,dat,otherdat,alts) {
-#' clogit
+logit_c <- function(starts3,dat,otherdat,alts) {
+#' logit_c
 #'
 #' Conditional logit likelihood
 #'

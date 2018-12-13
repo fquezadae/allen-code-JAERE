@@ -19,7 +19,9 @@ knitr::opts_chunk$set(
 Runs discrete choice models. If you If you run into problems you can contact allen.chen@noaa.gov.
 
 - User supplies `catch`, `choice`, and `distance` data, plus any other data `otherdat` they need to run their chosen likelihood.
-- Currently ships with a conditional logit function `clogit`, and an average catch logit function `logit_zone_avgcat`.
+- Currently ships with a conditional logit function `logit_c`, an average catch logit function `logit_avgcat`, an expected profit model with a normally
+distributed catch function `epm_normal`, an expected profit model with a log-normally distributed catch function `epm_lognormal`, and an expected profit model 
+with a weibull distributed catch function `epm_weibull`.
 
 ## Data
 The user supplies `catch`, `choice`, and `distance` data. The data `catch` and `choice` should be data frames with dimensions *(number of observations) x 1*.
@@ -64,7 +66,7 @@ Below are predicted catches based a regression using vessel and location covaria
 str(otherdat)
 ```
 
-For the `clogit` function, any number of grid-varying variables (e.g. expected catch that varies by location) or interaction 
+For the `logit_c` function, any number of grid-varying variables (e.g. expected catch that varies by location) or interaction 
 variables (e.g. vessel characteristics that affect how much disutility is suffered by traveling a greater distance) are allowed. 
 However, the user must place these in `otherdat` as list objects named `griddat` and `intdat` respectively. Note the variables 
 within `griddat` and `intdat` have no naming restrictions. Also note that `griddat` variables are dimension 
@@ -73,9 +75,9 @@ to be interacted with the distance to each alternative.
 
 If there are no other data, the user can set `griddat` as ones with dimension *(number of observations) x (number of alternatives)* and `intdat` 
 variables as ones with dimension *(number of observations) x 1*. Finally, users can write their own likelihoods, and this example is 
-specific to the package-supplied conditional logit (`clogit`) function (see documentation for other likelihoods).
+specific to the package-supplied conditional logit (`logit_c`) function (see documentation for other likelihoods).
 
-## To run models call the `zonal_subroutine` function
+## To run models call the `discretefish_subroutine` function
 
 The user supplies initial parameters, optimization options and the likelihood function name, for a total of 7 total inputs.
 For example:
@@ -84,7 +86,7 @@ For example:
 initparams <- c(2.5, -0.8) #Initial paramters for revenue then cost.
 optimOpt <- c(100000,1000000,1.00000000000000e-06) #Optimization options for the maximum number of
 					   #function evaluations, maximum iterations, and the relative tolerance of x.
-func <- clogit #The conditional logit likelihood function.
+func <- logit_c #The conditional logit likelihood function.
 ```
 
 The subroutine function takes in 7 inputs and outputs model results in a list that can be summarized as:
@@ -97,7 +99,7 @@ The subroutine function takes in 7 inputs and outputs model results in a list th
 	H1 - The inverse hessian 
 	
 ```{r, echo=TRUE}
-results <- zonal_subroutine(catch,choice,distance,otherdat,initparams,optimOpt,func)
+results <- discretefish_subroutine(catch,choice,distance,otherdat,initparams,optimOpt,func)
 results
 ```
 

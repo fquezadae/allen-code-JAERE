@@ -1,5 +1,5 @@
-zonal_subroutine <- function(catch,choice,distance,otherdat,initparams,optimOpt,func) {
-#' zonal_subroutine
+discretefish_subroutine <- function(catch,choice,distance,otherdat,initparams,optimOpt,func) {
+#' discretefish_subroutine
 #'
 #' Subroutine to run chosen discrete choice model
 #'
@@ -60,7 +60,7 @@ optim(starts2, fr, dat=d, otherdat=otherdat, alts=max(choice), control = control
 	
 })
 
-if (res[[1]] == "Optimization error, check 'ldglobalcheck'") {
+if (res[[1]][1] == "Optimization error, check 'ldglobalcheck'") {
 
 	return(list(errorExplain=res,OutLogit=OutLogit,optoutput=optoutput,seoutmat2=seoutmat2,MCM=MCM,H1=H1))
 	
