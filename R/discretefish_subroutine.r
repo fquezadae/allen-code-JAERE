@@ -92,7 +92,7 @@ solve(H)
 
 }, error = function(e) {
 
-    return("Error, singular") 
+    return("Error, singular, check 'ldglobalcheck'") 
 	
 })
 
@@ -102,11 +102,19 @@ diag(H1)
 
 }, error = function(e) {
 
-    return("Error, NAs") 
+    return("Error, NAs, check 'ldglobalcheck'") 
 	
 })
 
-se2 <- sqrt(diag2)
+se2 <- tryCatch({ 
+
+sqrt(diag2) 
+
+}, warning = function(war) {
+
+	print("Check 'ldglobalcheck'")
+	sqrt(diag2) 
+})
 
 outmat2 <- t(q2)
 seoutmat2 <- t(se2)
