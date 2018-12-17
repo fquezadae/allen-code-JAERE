@@ -22,7 +22,7 @@ epm_normal <- function(starts3,dat,otherdat,alts) {
 ld1 <- list()
 griddat <- (otherdat$griddat) #should be ones here
 intdat <- (otherdat$intdat)
-pricedat <- (otherdat$pricedat[[1]])
+pricedat <- (otherdat$pricedat)
 
 starts3 <- as.matrix(starts3)
 gridcoef <- as.matrix(starts3[1:(length(griddat)*alts),])
@@ -37,7 +37,7 @@ sigmac <- as.matrix(starts3[((length(griddat)*alts)+length(intdat)+2),]) #should
 for(i in 1:dim(dat)[1])
 {
 
-betas1 <- c(t(as.matrix(do.call(rbind,lapply(griddat,`[`,i,)))*t(gridcoef))%*%as.matrix(pricedat[i,]), 
+betas1 <- c(t(as.matrix(do.call(rbind,lapply(griddat,`[`,i,)))*t(gridcoef))%*%as.matrix(do.call(rbind,lapply(pricedat,`[`,i,))), 
 			t(as.matrix(do.call(rbind,lapply(intdat,`[`,i,))))%*%as.matrix(intcoef))
 betas <- t(as.matrix(betas1))
 
@@ -55,7 +55,7 @@ yj <- dat[i,1]
 cj <- dat[i,2]
 
 ldcatch1 <- (-(0.5)*log(2*pi))
-ldcatch2 <- (-(0.5)*log(sigmaa^2)) #this is different than FishSET original (no 0.5 and squared)
+ldcatch2 <- (-(0.5)*log(sigmaa^2))
 ldcatch3 <- (-(0.5)*(((yj-gridcoef[cj,])/(sigmaa))^2))
 ldcatch <- ldcatch1 + ldcatch2 + ldcatch3
 			
