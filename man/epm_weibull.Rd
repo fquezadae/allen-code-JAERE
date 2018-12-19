@@ -7,7 +7,7 @@
 epm_weibull(starts3, dat, otherdat, alts)
 }
 \arguments{
-\item{starts3}{Starting values}
+\item{starts3}{Starting values. e.g. c([grid-varying variables], [interaction variables], [catch variance], [scale parameter]).}
 
 \item{dat}{Data matrix, see output from shiftSortX, alternatives with distance by column bind}
 

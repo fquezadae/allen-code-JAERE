@@ -39,8 +39,8 @@ starts2 <- initparams
 LL_start <- fr(starts2,d,otherdat,max(choice))
 
 if (is.null(LL_start) || is.nan(LL_start) || is.infinite(LL_start)) { #haven't checked what happens when error yet
-   errorExplain <- "Initial function results bad (Nan, Inf, or undefined)"
-   return("Initial function results bad (Nan, Inf, or undefined)") 
+   errorExplain <- "Initial function results bad (Nan, Inf, or undefined), check 'ldglobalcheck'"
+   return("Initial function results bad (Nan, Inf, or undefined), check 'ldglobalcheck'") 
 }
 
 #############################################################################

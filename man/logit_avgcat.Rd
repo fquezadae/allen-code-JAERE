@@ -8,7 +8,7 @@ logit_avgcat(starts3, dat, otherdat, alts)
 }
 \arguments{
 \item{starts3}{Starting values with dimensions equal to (number of alternatives - 1)*(number of grid-varying variables) + (number of interactions).
-Recall the user must drop one alternative for identification.}
+Recall the user must drop one alternative for identification. e.g. c([grid-varying variables -1], [interaction variables]).}
 
 \item{dat}{Data matrix, see output from shiftSortX, alternatives with distance by column bind}
 
