@@ -54,6 +54,8 @@ res <- tryCatch({
 
 optim(starts2, fr, dat=d, otherdat=otherdat, alts=max(choice), control = controlin, hessian = TRUE)
 
+# nlm(fr, starts2, dat=d, otherdat=otherdat, alts=max(choice), hessian=TRUE, iterlim = mIter)
+
 }, error = function(e) {
 
     return("Optimization error, check 'ldglobalcheck'") 
