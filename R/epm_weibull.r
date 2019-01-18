@@ -26,12 +26,14 @@ pricedat <- (otherdat$pricedat[[1]])
 
 starts3 <- as.matrix(starts3)
 gridcoef <- as.matrix(starts3[1:(length(griddat)*alts),]) #lambda
+gridcoef <- sqrt(gridcoef^2)
 # gridcoef <- as.matrix(starts3[1:alts,])
 
 intcoef <- as.matrix(starts3[(((length(griddat)*alts)+length(intdat))-length(intdat)+1):((length(griddat)*alts)+length(intdat)),])
 # intcoef <- as.matrix(starts3[((alts+length(intdat))-length(intdat)+1):(alts+length(intdat)),])
 
 k <- as.matrix(starts3[((length(griddat)*alts)+length(intdat)+1),])
+k <- sqrt(k^2)
 sigmac <- as.matrix(starts3[((length(griddat)*alts)+length(intdat)+2),]) #should be end
 
 for(i in 1:dim(dat)[1])
@@ -68,9 +70,16 @@ ld1[[i]] <- ldcatch + ldchoice
 
 }
 
-ldglobalcheck <<- unlist(as.matrix(ld1))
-
 ld <- (-do.call("sum", ld1))
+
+if (is.nan(ld) == TRUE) {
+ld <- .Machine$double.xmax
+# ld <- .Machine$integer.max
+}
+
+ldsumglobalcheck <<- ld
+paramsglobalcheck <<- starts3
+ldglobalcheck <<- unlist(as.matrix(ld1))
 
 return(ld)
 

@@ -1,4 +1,4 @@
-discretefish_subroutine <- function(catch,choice,distance,otherdat,initparams,optimOpt,func) {
+discretefish_subroutine <- function(catch,choice,distance,otherdat,initparams,optimOpt,func,methodname) {
 #' discretefish_subroutine
 #'
 #' Subroutine to run chosen discrete choice model
@@ -48,13 +48,13 @@ mIter <- optimOpt[2]
 MaxFunEvals <- optimOpt[1]
 TolX  <-  optimOpt[3]
 
-controlin <- list(maxit=mIter, reltol=TolX)
+controlin <- list(maxit=mIter)
 
 res <- tryCatch({
 
-optim(starts2, fr, dat=d, otherdat=otherdat, alts=max(choice), control = controlin, hessian = TRUE)
-
-# nlm(fr, starts2, dat=d, otherdat=otherdat, alts=max(choice), hessian=TRUE, iterlim = mIter)
+# optim(starts2, fr, dat=d, otherdat=otherdat, alts=max(choice), method = methodname, lower = lowername, upper = uppername, control = controlin, hessian = TRUE)
+# optim(starts2, fr, dat=d, otherdat=otherdat, alts=max(choice), control = controlin, hessian = TRUE)
+optim(starts2, fr, dat=d, otherdat=otherdat, alts=max(choice), method = methodname, control = controlin, hessian = TRUE)
 
 }, error = function(e) {
 

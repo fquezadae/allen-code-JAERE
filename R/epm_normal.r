@@ -63,9 +63,16 @@ ld1[[i]] <- ldcatch + ldchoice
 
 }
 
-ldglobalcheck <<- unlist(as.matrix(ld1))
-
 ld <- (-do.call("sum", ld1))
+
+if (is.nan(ld) == TRUE) {
+ld <- .Machine$double.xmax
+# ld <- .Machine$integer.max
+}
+
+ldsumglobalcheck <<- ld
+paramsglobalcheck <<- starts3
+ldglobalcheck <<- unlist(as.matrix(ld1))
 
 return(ld)
 
