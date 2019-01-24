@@ -52,8 +52,6 @@ controlin <- list(maxit=mIter)
 
 res <- tryCatch({
 
-# optim(starts2, fr, dat=d, otherdat=otherdat, alts=max(choice), method = methodname, lower = lowername, upper = uppername, control = controlin, hessian = TRUE)
-# optim(starts2, fr, dat=d, otherdat=otherdat, alts=max(choice), control = controlin, hessian = TRUE)
 optim(starts2, fr, dat=d, otherdat=otherdat, alts=max(choice), method = methodname, control = controlin, hessian = TRUE)
 
 }, error = function(e) {
@@ -70,7 +68,7 @@ if (res[[1]][1] == "Optimization error, check 'ldglobalcheck'") {
 
 q2 <- res[["par"]]
 LL <- res[["value"]]
-output <- list(counts = res[["counts"]], convergence = res[["convergence"]], mesage=res[["message"]])
+output <- list(counts = res[["counts"]], convergence = res[["convergence"]], optim_message=res[["message"]])
 H <- res[["hessian"]]
 	
 #Model comparison metrics (MCM)
