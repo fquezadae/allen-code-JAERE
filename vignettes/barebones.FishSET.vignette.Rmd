@@ -84,7 +84,7 @@ For example:
   
 ```{r, echo=TRUE}
 initparams <- c(2.5, -0.8) #Initial paramters for revenue then cost.
-optimOpt <- c(100000,1000000,1.00000000000000e-06) #Optimization options for the maximum number of
+optimOpt <- c(1000,1.00000000000000e-06,1,1) #Optimization options for the maximum number of
 					   #function evaluations, maximum iterations, and the relative tolerance of x.
 func <- logit_c #The conditional logit likelihood function.
 methodname <- "BFGS" #The optimization method chosen, which must be one of the base R `optim` options.

@@ -33,7 +33,6 @@ dataCompile <- create_logit_input(choice)
 
 d <- shiftSortX(dataCompile,choice,catch,distance,max(choice),ab)
 
-MCR <- 1
 starts2 <- initparams
 
 LL_start <- fr(starts2,d,otherdat,max(choice))
@@ -44,11 +43,13 @@ if (is.null(LL_start) || is.nan(LL_start) || is.infinite(LL_start)) { #haven't c
 }
 
 #############################################################################
-mIter <- optimOpt[2]
-MaxFunEvals <- optimOpt[1]
-TolX  <-  optimOpt[3]
+mIter <- optimOpt[1] #should add something to default options here if not specified
+relTolX <- optimOpt[2]
+reportfreq <- optimOpt[3]
+detailreport <- optimOpt[4]
 
-controlin <- list(maxit=mIter)
+
+controlin <- list(trace=detailreport,maxit=mIter,reltol=relTolX,REPORT=reportfreq)
 
 res <- tryCatch({
 
