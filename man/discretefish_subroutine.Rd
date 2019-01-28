@@ -5,7 +5,7 @@
 \title{discretefish_subroutine}
 \usage{
 discretefish_subroutine(catch, choice, distance, otherdat, initparams,
-  optimOpt, func)
+  optimOpt, func, methodname)
 }
 \arguments{
 \item{catch}{Data corresponding to actual zonal choice}

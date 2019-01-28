@@ -20,26 +20,35 @@ epm_weibull <- function(starts3,dat,otherdat,alts) {
 #'
 
 ld1 <- list()
-griddat <- (otherdat$griddat) #should be ones here
+griddat <- (otherdat$griddat)
 intdat <- (otherdat$intdat)
-pricedat <- (otherdat$pricedat[[1]])
+pricedat <- (otherdat$pricedat)
 
 starts3 <- as.matrix(starts3)
 gridcoef <- as.matrix(starts3[1:(length(griddat)*alts),]) #lambda
-# gridcoef <- as.matrix(starts3[1:alts,])
 
 intcoef <- as.matrix(starts3[(((length(griddat)*alts)+length(intdat))-length(intdat)+1):((length(griddat)*alts)+length(intdat)),])
-# intcoef <- as.matrix(starts3[((alts+length(intdat))-length(intdat)+1):(alts+length(intdat)),])
 
+if ((dim(starts3)[1] - ((length(griddat)*alts)+length(intdat)+1)) == alts) {
+k <- as.matrix(starts3[((length(griddat)*alts)+length(intdat)+1):((length(griddat)*alts)+length(intdat)+alts),])
+signum <- alts
+} else {
 k <- as.matrix(starts3[((length(griddat)*alts)+length(intdat)+1),])
-sigmac <- as.matrix(starts3[((length(griddat)*alts)+length(intdat)+2),]) #should be end
+signum <- 1
+}
+k <- sqrt(k^2)
+
+sigmac <- as.matrix(starts3[((length(griddat)*alts)+length(intdat)+1+signum),]) #end of vector
 
 for(i in 1:dim(dat)[1])
 {
 
-expgridcoef <- gridcoef*matrix(gamma(1 + (1/k)),dim(gridcoef)[1],1)
+gridmu <- t(t(as.numeric(rowSums(t(as.matrix(do.call(rbind,lapply(griddat,`[`,i,)))*t(matrix(gridcoef,alts,length(griddat))))))))
+gridmu <- sqrt(gridmu^2)
+
+expgridcoef <- gridmu*matrix(gamma(1 + (1/k)),alts,1)
  
-betas1 <- c(t(as.matrix(do.call(rbind,lapply(griddat,`[`,i,)))*t(expgridcoef))%*%as.matrix(pricedat[i,]), 
+betas1 <- c((expgridcoef)%*%as.matrix(do.call(rbind,lapply(pricedat,`[`,i,))), 
 			t(as.matrix(do.call(rbind,lapply(intdat,`[`,i,))))%*%as.matrix(intcoef))
 betas <- t(as.matrix(betas1))
 
@@ -56,11 +65,16 @@ ldchoice <- (-log(t(exb)%*%(rep(1, alts))))
 yj <- dat[i,1]
 cj <- dat[i,2]
 
-#you should probably check this likelihood, copied from FishSET
-ldcatch0 <- log(k)
-ldcatch1 <- (-(k)*log(gridcoef[cj,]))
-ldcatch2 <- (k-1)*log(yj)
-ldcatch3 <- (-((yj/gridcoef[cj,])^k))
+if (signum == 1) {
+empk <- k
+} else {
+empk <- k[cj,]
+}
+
+ldcatch0 <- log(empk)
+ldcatch1 <- (-(empk)*log(gridmu[cj,]))
+ldcatch2 <- (empk-1)*log(yj)
+ldcatch3 <- (-((yj/gridmu[cj,])^empk))
 			
 ldcatch <- ldcatch0 + ldcatch1 + ldcatch2 + ldcatch3
 			
@@ -68,9 +82,15 @@ ld1[[i]] <- ldcatch + ldchoice
 
 }
 
-ldglobalcheck <<- unlist(as.matrix(ld1))
-
 ld <- (-do.call("sum", ld1))
+
+if (is.nan(ld) == TRUE) {
+ld <- .Machine$double.xmax
+}
+
+ldsumglobalcheck <<- ld
+paramsglobalcheck <<- starts3
+ldglobalcheck <<- unlist(as.matrix(ld1))
 
 return(ld)
 

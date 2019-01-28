@@ -1,4 +1,4 @@
-discretefish_subroutine <- function(catch,choice,distance,otherdat,initparams,optimOpt,func) {
+discretefish_subroutine <- function(catch,choice,distance,otherdat,initparams,optimOpt,func,methodname) {
 #' discretefish_subroutine
 #'
 #' Subroutine to run chosen discrete choice model
@@ -33,7 +33,6 @@ dataCompile <- create_logit_input(choice)
 
 d <- shiftSortX(dataCompile,choice,catch,distance,max(choice),ab)
 
-MCR <- 1
 starts2 <- initparams
 
 LL_start <- fr(starts2,d,otherdat,max(choice))
@@ -44,15 +43,17 @@ if (is.null(LL_start) || is.nan(LL_start) || is.infinite(LL_start)) { #haven't c
 }
 
 #############################################################################
-mIter <- optimOpt[2]
-MaxFunEvals <- optimOpt[1]
-TolX  <-  optimOpt[3]
+mIter <- optimOpt[1] #should add something to default options here if not specified
+relTolX <- optimOpt[2]
+reportfreq <- optimOpt[3]
+detailreport <- optimOpt[4]
 
-controlin <- list(maxit=mIter, reltol=TolX)
+
+controlin <- list(trace=detailreport,maxit=mIter,reltol=relTolX,REPORT=reportfreq)
 
 res <- tryCatch({
 
-nlm(fr, starts2, dat=d, otherdat=otherdat, alts=max(choice), hessian=TRUE, iterlim = mIter)
+optim(starts2, fr, dat=d, otherdat=otherdat, alts=max(choice), method = methodname, control = controlin, hessian = TRUE)
 
 }, error = function(e) {
 
@@ -66,9 +67,9 @@ if (res[[1]][1] == "Optimization error, check 'ldglobalcheck'") {
 	
 }
 
-q2 <- res[["estimate"]]
-LL <- res[["minimum"]]
-output <- list(counts = res[["iterations"]], convergence = res[["code"]])
+q2 <- res[["par"]]
+LL <- res[["value"]]
+output <- list(counts = res[["counts"]], convergence = res[["convergence"]], optim_message=res[["message"]])
 H <- res[["hessian"]]
 	
 #Model comparison metrics (MCM)
