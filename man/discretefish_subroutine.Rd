@@ -18,9 +18,11 @@ discretefish_subroutine(catch, choice, distance, otherdat, initparams,
 
 \item{initparams}{Initial parameter estimates for revenue/location-specific covariates then cost/distance}
 
-\item{optimOpt}{Optimization options [max function evaluations, max iterations, (reltol) tolerance of x]}
+\item{optimOpt}{Optimization options [max iterations, (reltol) tolerance of x, report frequency, whether to report]}
 
 \item{func}{Name of likelihood function}
+
+\item{methodname}{Optimization method (see optim options)}
 }
 \value{
 OutLogit - [outmat1 se1 tEPM2] (coefs, ses, tstats) \cr 

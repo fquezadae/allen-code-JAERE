@@ -8,8 +8,9 @@ discretefish_subroutine <- function(catch,choice,distance,otherdat,initparams,op
 #' @param distance Data corresponding to distance
 #' @param otherdat Other data (as a list)
 #' @param initparams Initial parameter estimates for revenue/location-specific covariates then cost/distance
-#' @param optimOpt Optimization options [max function evaluations, max iterations, (reltol) tolerance of x]
+#' @param optimOpt Optimization options [max iterations, (reltol) tolerance of x, report frequency, whether to report]
 #' @param func Name of likelihood function
+#' @param methodname Optimization method (see optim options)
 #' @return
 #' OutLogit - [outmat1 se1 tEPM2] (coefs, ses, tstats) \cr 
 #' optoutput - optimization information \cr 
@@ -31,7 +32,7 @@ fr <- func #e.g. clogit
 ab <- max(choice) + 1 #no interactions in create_logit_input - interact distances in likelihood function instead
 dataCompile <- create_logit_input(choice)
 
-d <- shiftSortX(dataCompile,choice,catch,distance,max(choice),ab)
+d <- shift_sort_x(dataCompile,choice,catch,distance,max(choice),ab)
 
 starts2 <- initparams
 
