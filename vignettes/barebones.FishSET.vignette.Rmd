@@ -42,7 +42,7 @@ distance <- read.csv("distance.csv", header=FALSE)
 
 griddatfin <- list(predicted_catch=predicted_catch)
 intdatfin <- list(zi=zi)
-otherdat <- list(griddat=griddatfin,intdat=intdatfin)
+otherdat <- list(griddat=as.matrix(predicted_catch),intdat=as.matrix(zi),gridnum=1,intnum=1)
 
 library(barebones.FishSET)
 ```

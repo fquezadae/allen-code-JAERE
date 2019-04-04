@@ -18,38 +18,49 @@ logit_c <- function(starts3, dat, otherdat, alts) {
     #' @export
     #' @examples
     #'
-    
-    ld1 <- list()
+
+    ld1 <- matrix(ncol=1, nrow=dim(dat)[1])
+	# ld1 <- list()
+	
     griddat <- (otherdat$griddat)  #this is a list
     intdat <- (otherdat$intdat)
-    
+    gridnum <- otherdat$gridnum
+	intnum <- otherdat$intnum
+
     starts3 <- as.matrix(starts3)
-    gridcoef <- as.matrix(starts3[1:length(griddat), ])
-    intcoef <- as.matrix(starts3[((length(griddat) + length(intdat)) - 
-        length(intdat) + 1):(length(griddat) + length(intdat)), ])
-    
+    gridcoef <- as.matrix(starts3[1:gridnum, ])
+    intcoef <- as.matrix(starts3[((gridnum + intnum) - 
+				intnum + 1):(gridnum + intnum), ])
+		
+	# gridcoef <- otherdat$gridcoef
+	# intcoef <- otherdat$intcoef
+
     for (i in 1:dim(dat)[1]) {
         
-        betas1 <- c(t(as.matrix(do.call(rbind, lapply(griddat, `[`, i, 
-            )))) %*% as.matrix(gridcoef), t(as.matrix(do.call(rbind, lapply(intdat, 
-            `[`, i, )))) %*% as.matrix(intcoef))
+        betas1 <- c((griddat[i,]) %*% as.matrix(gridcoef), 
+					(intdat[i,]) %*% as.matrix(intcoef))
+
         betas <- t(as.matrix(betas1))
-        
+
         djz <- t(dat[i, 3:dim(dat)[2]])
-        
+
         dj <- matrix(djz, nrow = alts, ncol = dim(betas)[2])
-        
+
         xb <- dj %*% t(betas)
-        xb <- xb - xb[1]
-        exb <- exp(xb)
-        ld1[[i]] <- (-log(t(exb) %*% (rep(1, alts))))
-        
+
+        xbm <- xb - xb[1]
+
+        exb <- exp(xbm)
+
+        # ld1[[i]] <- (-log(t(exb) %*% (rep(1, alts))))
+		ld1[i,] <- (-log(t(exb) %*% (rep(1, alts))))
     }
+
+    # ldglobalcheck <<- unlist(as.matrix(ld1))
     
-    ldglobalcheck <<- unlist(as.matrix(ld1))
-    
-    ld <- (-do.call("sum", ld1))
-    
+	# ld <- (-do.call("sum", ld1))   
+	ld <- -sum(ld1)
+	
     return(ld)
     
 }
