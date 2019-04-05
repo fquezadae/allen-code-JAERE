@@ -57,20 +57,24 @@ logit_correction <- function(starts3, dat, otherdat, alts) {
     # sigmac <- as.matrix(starts3[((1 + gridlength) + length(intdat) + 
         # 1 + signum), ])  #end of vector
 		
-	if ((dim(starts3)[1] - (1 + gridlength + 
-        1)) == alts) {
-        sigmaa <- as.matrix(starts3[((1 + gridlength) + 
-            1):((1 + gridlength) + alts), ])
-        signum <- alts
-    } else {
-        sigmaa <- as.matrix(starts3[((1 + gridlength) + 
+	# if ((dim(starts3)[1] - (1 + gridlength + 
+        # 1)) == alts) {
+        # sigmaa <- as.matrix(starts3[((1 + gridlength) + 
+            # 1):((1 + gridlength) + alts), ])
+        # signum <- alts
+    # } else {
+        # sigmaa <- as.matrix(starts3[((1 + gridlength) + 
+            # 1), ])
+        # signum <- 1
+    # }
+	
+	sigmaa <- as.matrix(starts3[((1 + gridlength) + 
             1), ])
-        signum <- 1
-    }
+	signum <- 1
     
     sigmac <- as.matrix(starts3[((1 + gridlength) + 
         1 + signum), ])  #end of vector
-    
+		
     for (i in 1:dim(dat)[1]) {
         
         betas1 <- c(t((griddat[i,]) * t(matrix(gridcoef[1:alts, ], alts, gridnum))) %*% rep(as.matrix(
@@ -109,7 +113,7 @@ logit_correction <- function(starts3, dat, otherdat, alts) {
 		
 		probmove <- probsorder[cj]*locmove
 		
-		probmoveint <- probstay*probmove*locmove
+		probmoveint <- probsorder[oriloc]*probsorder[cj]*locmove
 		
 		if (oriloc == cj) {
 			Xvar <- c(((griddat[i,])*locmove), locstay)
