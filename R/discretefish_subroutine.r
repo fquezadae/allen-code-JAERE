@@ -102,6 +102,10 @@ diag2 <- tryCatch({
 
 diag(H1)
 
+}, warning = function(w) {
+
+	return("Error, NAs, check 'ldglobalcheck'") 
+
 }, error = function(e) {
 
     return("Error, NAs, check 'ldglobalcheck'") 
@@ -112,17 +116,37 @@ se2 <- tryCatch({
 
 sqrt(diag2) 
 
-}, warning = function(war) {
+}, error = function(e) {
 
-	print("Check 'ldglobalcheck'")
-	sqrt(diag2) 
+    return("Error, NAs, check 'ldglobalcheck'") 
+	
 })
 
-outmat2 <- t(q2)
+outmat2 <- tryCatch({ 
+
+ t(q2)
+ 
+}, error = function(e) {
+
+    return("Error, NAs, check 'ldglobalcheck'") 
+	
+})
+
 seoutmat2 <- t(se2)
 optoutput <- output
-tLogit <- t(outmat2/se2)
+
+tLogit <- tryCatch({ 
+
+t(outmat2/se2)
+
+}, error = function(e) {
+
+    return("Error, NAs, check 'ldglobalcheck'") 
+	
+})
+
 OutLogit <- cbind(t(outmat2), as.matrix(se2), (tLogit))
+
 }
 
 #############################################################################
