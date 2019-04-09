@@ -112,16 +112,6 @@ diag(H1)
 	
 })
 
-se2 <- tryCatch({ 
-
-sqrt(diag2) 
-
-}, error = function(e) {
-
-    return("Error, NAs, check 'ldglobalcheck'") 
-	
-})
-
 outmat2 <- tryCatch({ 
 
  t(q2)
@@ -129,6 +119,20 @@ outmat2 <- tryCatch({
 }, error = function(e) {
 
     return("Error, NAs, check 'ldglobalcheck'") 
+	
+})
+
+se2 <- tryCatch({ 
+
+sqrt(diag2) 
+
+}, warning = function(w) {
+
+	suppressWarnings(sqrt(diag2)) 
+	
+}, error = function(e) {
+
+    return(matrix("Error, NAs, check 'ldglobalcheck'",dim(outmat2)[2])) 
 	
 })
 
