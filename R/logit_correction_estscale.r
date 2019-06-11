@@ -1,4 +1,4 @@
-logit_correction <- function(starts3, dat, otherdat, alts) {
+logit_correction_estscale <- function(starts3, dat, otherdat, alts) {
     #' logit_correction
     #'
     #' Full information model with Dahl's correction function

@@ -1,4 +1,4 @@
-logit_correction_v <- function(starts3, dat, otherdat, alts) {
+logit_correction_estcost_v <- function(starts3, dat, otherdat, alts) {
     #' logit_correction
     #'
     #' Full information model with Dahl's correction function
@@ -38,15 +38,16 @@ logit_correction_v <- function(starts3, dat, otherdat, alts) {
 	
     gridcoef <- as.matrix(starts3[2:(1 + gridlength), ])
     
-	intcoef <- (-1)
+	signum <- 1
+
+	intcoef <- as.numeric(starts3[((1 + gridlength) + 
+        1 + signum), ])  #end of vector
+	
+	sigmac <- (1)
 	
 	sigmaa <- as.matrix(starts3[((1 + gridlength) + 
             1), ])
-	signum <- 1
     
-    sigmac <- as.matrix(starts3[((1 + gridlength) + 
-        1 + signum), ])  #end of vector
-
 	obsnum <- dim(griddat)[1]
 	
 #############################################

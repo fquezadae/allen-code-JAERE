@@ -1,5 +1,5 @@
-logit_c <- function(starts3, dat, otherdat, alts) {
-    #' logit_c
+logit_c_v <- function(starts3, dat, otherdat, alts) {
+    #' logit_c_v
     #'
     #' Conditional logit likelihood
     #'
@@ -14,14 +14,16 @@ logit_c <- function(starts3, dat, otherdat, alts) {
     #' If there are no other data, the user can set `griddat` as ones with dimension *(number of observations) x (number of alternatives)*
     #' and `intdat` variables as ones with dimension *(number of observations) x 1*.
     #' @param alts Number of alternative choices in model
+    #' @param project Name of project
+    #' @param expname Expected catch table
+    #' @param mod.name Name of model run for model result output table
     #' @return ld - negative log likelihood
     #' @export
-    #' @examples
+    # @examples
     #'
+    
+    ld1 <- list()
 
-    ld1 <- matrix(ncol=1, nrow=dim(dat)[1])
-	# ld1 <- list()
-	
 	intdat <- as.matrix(unlist(otherdat$intdat))
     griddat <- as.matrix(unlist(otherdat$griddat))
     
@@ -31,41 +33,45 @@ logit_c <- function(starts3, dat, otherdat, alts) {
 	
 	intdat <- matrix(intdat, obsnum, dim(intdat)[1]/obsnum)
     griddat <- matrix(griddat, obsnum, dim(griddat)[1]/obsnum)
-
+    
     starts3 <- as.matrix(starts3)
     gridcoef <- as.matrix(starts3[1:gridnum, ])
     intcoef <- as.matrix(starts3[((gridnum + intnum) - 
 				intnum + 1):(gridnum + intnum), ])
-		
-	# gridcoef <- otherdat$gridcoef
-	# intcoef <- otherdat$intcoef
+    
+	#############################################
 
-    for (i in 1:dim(dat)[1]) {
-        
-        betas1 <- c((griddat[i,]) %*% as.matrix(gridcoef), 
-					(intdat[i,]) %*% as.matrix(intcoef))
+	betas <- matrix(c((matrix(gridcoef,obsnum,alts,byrow=TRUE)*griddat), intdat*rep(intcoef,obsnum)),obsnum,(alts*gridnum)+intnum)
 
-        betas <- t(as.matrix(betas1))
+	djztemp <- betas[1:obsnum,rep(1:ncol(betas), each = alts)]*dat[, 3:(dim(dat)[2])]
+	dim(djztemp) <- c(nrow(djztemp), ncol(djztemp)/(alts+1), alts+1)
 
-        djz <- t(dat[i, 3:dim(dat)[2]])
+	prof <- rowSums(djztemp,dim=2)
+	profx <- prof - prof[,1]
 
-        dj <- matrix(djz, nrow = alts, ncol = dim(betas)[2])
+	exb <- exp(profx/matrix(sigmac, dim(prof)[1], dim(prof)[2]))
 
-        xb <- dj %*% t(betas)
+	ldchoice <- (-log(rowSums(exb)))
 
-        xbm <- xb - xb[1]
+	#############################################
+    
+	ld <- -sum(ldchoice)
 
-        exb <- exp(xbm)
-
-        # ld1[[i]] <- (-log(t(exb) %*% (rep(1, alts))))
-		ld1[i,] <- (-log(t(exb) %*% (rep(1, alts))))
+    if (is.nan(ld) == TRUE) {
+        ld <- .Machine$double.xmax
     }
-
-    # ldglobalcheck <<- unlist(as.matrix(ld1))
-    
-	# ld <- (-do.call("sum", ld1))   
-	ld <- -sum(ld1)
 	
-    return(ld)
+    ldsumglobalcheck <- ld
+    #assign('ldsumglobalcheck', value = ldsumglobalcheck, pos = 1)
+    paramsglobalcheck <- starts3
+    #assign('paramsglobalcheck', value = paramsglobalcheck, pos = 1)
+    ldglobalcheck <- unlist(as.matrix(ld1))
+    #assign('ldglobalcheck', value = ldglobalcheck, pos = 1)
     
+    # ldglobalcheck <- list(model=paste0(project, expname, mod.name), ldsumglobalcheck=ldsumglobalcheck,
+                          # paramsglobalcheck=paramsglobalcheck, ldglobalcheck=ldglobalcheck)
+    #assign("ldglobalcheck", value = ldglobalcheck, pos = 1)
+
+    return(ld)
+
 }
