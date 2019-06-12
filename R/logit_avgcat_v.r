@@ -21,17 +21,21 @@ logit_avgcat_v <- function(starts3, dat, otherdat, alts) {
     #' @return ld - negative log likelihood
     #' @export
 
-    ld1 <- list()
-    intdat <- as.matrix(unlist(otherdat$intdat))
+	intdat <- as.matrix(unlist(otherdat$intdat))
     griddat <- as.matrix(unlist(otherdat$griddat))
+	#row binds all columns from all variables into (#obs*#var*#alts) x 1
     
 	obsnum <- dim(otherdat$griddat[[1]])[1]
-
-    intdat <- matrix(intdat, obsnum, dim(intdat)[1]/obsnum)
-    griddat <- matrix(griddat, obsnum, dim(griddat)[1]/obsnum)
+	#number of rows for first griddat variable. must have at least one griddat
+	#variable (i.e. ones) and number of observations must be same across all variables.
 	
+	intdat <- matrix(intdat, obsnum, dim(intdat)[1]/obsnum)
+    griddat <- matrix(griddat, obsnum, dim(griddat)[1]/obsnum)
+	#reshape data into (#obs) x (#var*#alts)
+    
 	gridnum <- dim(griddat)[2]
 	intnum <- dim(intdat)[2]
+	#get number of variables no alts on gridnum here
 
     starts3 <- as.matrix(starts3)
     gridcoef <- as.matrix(starts3[1:(gridnum * (alts - 1)), ])
@@ -39,8 +43,14 @@ logit_avgcat_v <- function(starts3, dat, otherdat, alts) {
         (alts - 1))) + intnum), ])
     
    	#############################################
+
+	gridbetas <- (matrix(gridcoef,obsnum,(alts-1)*gridnum,byrow=TRUE)*griddat[, rep(1:gridnum, each=(alts-1))])
+	dim(gridbetas) <- c(nrow(gridbetas), (alts-1), gridnum)
+	gridbetas <- rowSums(gridbetas,dim=2)
 	
-	betas <- matrix(c((matrix(gridcoef[1:(alts-1),],obsnum,(alts-1),byrow=TRUE)*matrix(griddat,obsnum,(alts-1))), intdat*rep(intcoef,obsnum)),obsnum,((alts-1)*gridnum)+intnum)
+	intbetas <- .rowSums(intdat*matrix(intcoef,obsnum,intnum,byrow=TRUE),obsnum,intnum)
+	
+	betas <- matrix(c(gridbetas, intbetas),obsnum,(alts-1+1))
 
 	djztemp <- betas[1:obsnum,rep(1:ncol(betas), each = (alts))]*dat[, (alts+3):(dim(dat)[2])]
 	dim(djztemp) <- c(nrow(djztemp), ncol(djztemp)/((alts-1)+1), (alts-1)+1)
@@ -64,7 +74,7 @@ logit_avgcat_v <- function(starts3, dat, otherdat, alts) {
     #assign('ldsumglobalcheck', value = ldsumglobalcheck, pos = 1)
     paramsglobalcheck <- starts3
     #assign('paramsglobalcheck', value = paramsglobalcheck, pos = 1)
-    ldglobalcheck <- unlist(as.matrix(ld1))
+    ldglobalcheck <- unlist(as.matrix(ldchoice))
     #assign('ldglobalcheck', value = ldglobalcheck, pos = 1)
     
     # ldglobalcheck <- list(model=paste0(project, expname, mod.name), ldsumglobalcheck=ldsumglobalcheck,

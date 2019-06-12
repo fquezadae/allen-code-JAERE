@@ -20,16 +20,17 @@ epm_normal_v <- function(starts3, dat, otherdat, alts) {
     #'     #' @return ld - negative log likelihood
     #' @export    
     
-    ld1 <- list()
-	intdat <- as.matrix(unlist(otherdat$intdat))
+    intdat <- as.matrix(unlist(otherdat$intdat))
     griddat <- as.matrix(unlist(otherdat$griddat))
     
-	gridnum <- dim(griddat)[2]
-	intnum <- dim(intdat)[2]
 	obsnum <- dim(otherdat$griddat[[1]])[1]
-
-    intdat <- matrix(intdat, obsnum, dim(intdat)[1]/obsnum)
+	
+	intdat <- matrix(intdat, obsnum, dim(intdat)[1]/obsnum)
     griddat <- matrix(griddat, obsnum, dim(griddat)[1]/obsnum)
+	
+	gridnum <- dim(griddat)[2]/alts
+	intnum <- dim(intdat)[2]
+	#get number of variables
 	
     pricedat <-  as.matrix(unlist(otherdat$pricedat))
     
@@ -55,9 +56,15 @@ epm_normal_v <- function(starts3, dat, otherdat, alts) {
         1 + signum), ])  #end of vector
   
 	#############################################
+    
+	gridbetas <- (matrix(gridcoef,obsnum,alts*gridnum,byrow=TRUE)*griddat)
+	dim(gridbetas) <- c(nrow(gridbetas), alts, gridnum)
+	gridbetas <- rowSums(gridbetas,dim=2)
+	
+	intbetas <- .rowSums(intdat*matrix(intcoef,obsnum,intnum,byrow=TRUE),obsnum,intnum)
 
-	betas <- matrix(c((matrix(gridcoef[1:alts,],obsnum,alts,byrow=TRUE)*griddat*matrix(pricedat,obsnum,(alts))), intdat*rep(intcoef,obsnum)),obsnum,(alts*gridnum)+intnum)
-        
+	betas <- matrix(c((gridbetas*matrix(pricedat,obsnum,alts)), intbetas),obsnum,(alts+1))
+       	   
 	djztemp <- betas[1:obsnum,rep(1:ncol(betas), each = alts)]*dat[, 3:(dim(dat)[2])]
 	dim(djztemp) <- c(nrow(djztemp), ncol(djztemp)/(alts+1), alts+1)
 
@@ -73,14 +80,20 @@ epm_normal_v <- function(starts3, dat, otherdat, alts) {
 	yj <- dat[, 1]
 	cj <- dat[, 2]
 	
-	# empcatches <- (matrix(gridcoef[1:alts,],obsnum,alts,byrow=TRUE)*griddat)
-    empcatches <- gridcoef[cj]*griddat[,1]
-	
     if (signum == 1) {
 		empsigmaa <- sigmaa
     } else {
 		empsigmaa <- sigmaa[cj]
     }
+	
+	empgridbetas <- t(gridcoef)
+	dim(empgridbetas) <- c(nrow(empgridbetas), alts, gridnum)
+	
+	empgriddat <- griddat
+	dim(empgriddat) <- c(nrow(empgriddat), alts, gridnum)
+	
+	empcatches <- .rowSums(empgridbetas[,cj,]*empgriddat[,1,],obsnum,gridnum)
+	#note grid data same across all alternatives
 	
 	ldcatch <- (matrix((-(0.5) * log(2 * pi)),obsnum)) + (-(0.5) * log(matrix(empsigmaa,obsnum)^2)) + 
 			(-(0.5) * (((yj - empcatches)/(matrix(empsigmaa,obsnum)))^2))

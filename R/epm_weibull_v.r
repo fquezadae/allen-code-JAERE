@@ -20,16 +20,17 @@ epm_weibull_v <- function(starts3, dat, otherdat, alts) {
     #' @return ld - negative log likelihood
     #' @export
 
-    ld1 <- list()
 	intdat <- as.matrix(unlist(otherdat$intdat))
     griddat <- as.matrix(unlist(otherdat$griddat))
     
-	gridnum <- dim(griddat)[2]
-	intnum <- dim(intdat)[2]
 	obsnum <- dim(otherdat$griddat[[1]])[1]
 	
 	intdat <- matrix(intdat, obsnum, dim(intdat)[1]/obsnum)
     griddat <- matrix(griddat, obsnum, dim(griddat)[1]/obsnum)
+	
+	gridnum <- dim(griddat)[2]/alts
+	intnum <- dim(intdat)[2]
+	#get number of variables
 	
     pricedat <-  as.matrix(unlist(otherdat$pricedat))
 	
@@ -50,6 +51,8 @@ epm_weibull_v <- function(starts3, dat, otherdat, alts) {
             1), ])
         signum <- 1
     }
+	#if number of parameters before scale parameter is not equal to number of alts,
+	#use first parameter as sigma catch
 	
     k <- sqrt(k^2)
     
@@ -58,12 +61,17 @@ epm_weibull_v <- function(starts3, dat, otherdat, alts) {
     
     #############################################
 	
-    gridmu <- (matrix(gridcoef[1:alts,],obsnum,alts,byrow=TRUE)*griddat)
-    gridmu <- sqrt(gridmu^2)
-        
+	gridbetas <- (matrix(gridcoef,obsnum,alts*gridnum,byrow=TRUE)*griddat)
+	dim(gridbetas) <- c(nrow(gridbetas), alts, gridnum)
+	gridbetas <- rowSums(gridbetas,dim=2)
+	
+    gridmu <- sqrt(gridbetas^2)
+    
     expgridcoef <- gridmu * matrix(gamma(1 + (1/k)), obsnum, alts)
-		
-	betas <- matrix(c((expgridcoef*matrix(pricedat,obsnum,alts)), intdat*rep(intcoef,obsnum)),obsnum,(alts*gridnum)+intnum)
+	
+	intbetas <- .rowSums(intdat*matrix(intcoef,obsnum,intnum,byrow=TRUE),obsnum,intnum)
+
+	betas <- matrix(c((expgridcoef*matrix(pricedat,obsnum,alts)), intbetas),obsnum,(alts+1))
         
 	djztemp <- betas[1:obsnum,rep(1:ncol(betas), each = alts)]*dat[, 3:(dim(dat)[2])]
 	dim(djztemp) <- c(nrow(djztemp), ncol(djztemp)/(alts+1), alts+1)
@@ -85,8 +93,15 @@ epm_weibull_v <- function(starts3, dat, otherdat, alts) {
     } else {
 		empk <- k[cj]
     }
-        
-	empgridmu <- (matrix(gridcoef[cj],obsnum,1,byrow=TRUE)*griddat[,1])	
+    
+	empgridbetas <- t(gridcoef)
+	dim(empgridbetas) <- c(nrow(empgridbetas), alts, gridnum)
+	
+	empgriddat <- griddat
+	dim(empgriddat) <- c(nrow(empgriddat), alts, gridnum)
+	
+	empgridmu <- .rowSums(empgridbetas[,cj,]*empgriddat[,1,],obsnum,gridnum)
+	#note grid data same across all alternatives
 	empgridmu <- sqrt(empgridmu^2)
 
 	ldcatch <- (matrix((log(empk)),obsnum)) + (matrix((-(empk)),obsnum)*log(empgridmu)) + (matrix((empk - 1),obsnum)*log(yj)) +

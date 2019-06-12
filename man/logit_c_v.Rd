@@ -32,5 +32,8 @@ and `intdat` variables as ones with dimension *(number of observations) x 1*.}
 ld - negative log likelihood
 }
 \description{
-Conditional logit likelihood
+Conditional logit likelihood vectorised
+}
+\examples{
+
 }
