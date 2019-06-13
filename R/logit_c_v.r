@@ -69,7 +69,7 @@ logit_c_v <- function(starts3, dat, otherdat, alts) {
     assign('ldsumglobalcheck', value = ldsumglobalcheck, pos = 1)
     paramsglobalcheck <- starts3
     assign('paramsglobalcheck', value = paramsglobalcheck, pos = 1)
-    ldglobalcheck <- unlist(as.matrix(ld1))
+    ldglobalcheck <- unlist(as.matrix(ldchoice))
     assign('ldglobalcheck', value = ldglobalcheck, pos = 1)
 
     return(ld)
