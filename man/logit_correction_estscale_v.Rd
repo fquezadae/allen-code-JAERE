@@ -2,7 +2,7 @@
 % Please edit documentation in R/logit_correction_estscale_v.r
 \name{logit_correction_estscale_v}
 \alias{logit_correction_estscale_v}
-\title{logit_correction}
+\title{logit_correction that estimate scale instead of cost (for personal MC use)}
 \usage{
 logit_correction_estscale_v(starts3, dat, otherdat, alts)
 }

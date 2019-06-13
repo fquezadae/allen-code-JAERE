@@ -34,3 +34,6 @@ ld - negative log likelihood
 \description{
 Expected profit model lognormal catch function
 }
+\examples{
+
+}

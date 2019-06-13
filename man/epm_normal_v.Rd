@@ -26,9 +26,14 @@ and `intdat` variables as ones with dimension *(number of observations) x 1*.}
 
 \item{expname}{Expected catch table}
 
-\item{mod.name}{Name of model run for model result output table
-#' @return ld - negative log likelihood}
+\item{mod.name}{Name of model run for model result output table}
+}
+\value{
+ld - negative log likelihood
 }
 \description{
 Expected profit model normal catch function
+}
+\examples{
+
 }

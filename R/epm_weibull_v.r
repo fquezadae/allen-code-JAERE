@@ -19,18 +19,17 @@ epm_weibull_v <- function(starts3, dat, otherdat, alts) {
     #' @param mod.name Name of model run for model result output table
     #' @return ld - negative log likelihood
     #' @export
-
-	intdat <- as.matrix(unlist(otherdat$intdat))
-    griddat <- as.matrix(unlist(otherdat$griddat))
-    
-	obsnum <- dim(otherdat$griddat[[1]])[1]
+    #' @examples
+    #'
 	
-	intdat <- matrix(intdat, obsnum, dim(intdat)[1]/obsnum)
-    griddat <- matrix(griddat, obsnum, dim(griddat)[1]/obsnum)
+	griddat <- as.matrix(do.call(cbind, otherdat$griddat))
+    intdat <- as.matrix(do.call(cbind, otherdat$intdat))
 	
 	gridnum <- dim(griddat)[2]/alts
 	intnum <- dim(intdat)[2]
 	#get number of variables
+	
+	obsnum <- dim(griddat)[1]
 	
     pricedat <-  as.matrix(unlist(otherdat$pricedat))
 	
@@ -57,7 +56,8 @@ epm_weibull_v <- function(starts3, dat, otherdat, alts) {
     k <- sqrt(k^2)
     
     sigmac <- as.matrix(starts3[((gridnum * alts) + intnum + 
-        1 + signum), ])  #end of vector
+        1 + signum), ])
+	#end of vector
     
     #############################################
 	
@@ -102,6 +102,7 @@ epm_weibull_v <- function(starts3, dat, otherdat, alts) {
 	
 	empgridmu <- .rowSums(empgridbetas[,cj,]*empgriddat[,1,],obsnum,gridnum)
 	#note grid data same across all alternatives
+	
 	empgridmu <- sqrt(empgridmu^2)
 
 	ldcatch <- (matrix((log(empk)),obsnum)) + (matrix((-(empk)),obsnum)*log(empgridmu)) + (matrix((empk - 1),obsnum)*log(yj)) +
@@ -116,17 +117,13 @@ epm_weibull_v <- function(starts3, dat, otherdat, alts) {
     if (is.nan(ld) == TRUE) {
         ld <- .Machine$double.xmax
     }
-    
+	
     ldsumglobalcheck <- ld
-    #assign('ldsumglobalcheck', value = ldsumglobalcheck, pos = 1)
+    assign('ldsumglobalcheck', value = ldsumglobalcheck, pos = 1)
     paramsglobalcheck <- starts3
-    #assign('paramsglobalcheck', value = paramsglobalcheck, pos = 1)
+    assign('paramsglobalcheck', value = paramsglobalcheck, pos = 1)
     ldglobalcheck <- unlist(as.matrix(ld1))
-    #assign('ldglobalcheck', value = ldglobalcheck, pos = 1)
-    
-    # ldglobalcheck <- list(model=paste0(project, expname, mod.name), ldsumglobalcheck=ldsumglobalcheck,
-                          # paramsglobalcheck=paramsglobalcheck, ldglobalcheck=ldglobalcheck)
-    #assign("ldglobalcheck", value = ldglobalcheck, pos = 1)
+    assign('ldglobalcheck', value = ldglobalcheck, pos = 1)
     
     return(ld)
     

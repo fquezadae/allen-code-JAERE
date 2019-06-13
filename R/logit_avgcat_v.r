@@ -20,22 +20,17 @@ logit_avgcat_v <- function(starts3, dat, otherdat, alts) {
     #' @param mod.name Name of model run for model result output table
     #' @return ld - negative log likelihood
     #' @export
-
-	intdat <- as.matrix(unlist(otherdat$intdat))
-    griddat <- as.matrix(unlist(otherdat$griddat))
-	#row binds all columns from all variables into (#obs*#var*#alts) x 1
-    
-	obsnum <- dim(otherdat$griddat[[1]])[1]
-	#number of rows for first griddat variable. must have at least one griddat
-	#variable (i.e. ones) and number of observations must be same across all variables.
+    #' @examples
+    #'
 	
-	intdat <- matrix(intdat, obsnum, dim(intdat)[1]/obsnum)
-    griddat <- matrix(griddat, obsnum, dim(griddat)[1]/obsnum)
-	#reshape data into (#obs) x (#var*#alts)
-    
+	griddat <- as.matrix(do.call(cbind, otherdat$griddat))
+    intdat <- as.matrix(do.call(cbind, otherdat$intdat))
+	
 	gridnum <- dim(griddat)[2]
 	intnum <- dim(intdat)[2]
-	#get number of variables no alts on gridnum here
+	#get number of variables
+	
+	obsnum <- dim(griddat)[1]
 
     starts3 <- as.matrix(starts3)
     gridcoef <- as.matrix(starts3[1:(gridnum * (alts - 1)), ])
@@ -71,15 +66,11 @@ logit_avgcat_v <- function(starts3, dat, otherdat, alts) {
     }
     
     ldsumglobalcheck <- ld
-    #assign('ldsumglobalcheck', value = ldsumglobalcheck, pos = 1)
+    assign('ldsumglobalcheck', value = ldsumglobalcheck, pos = 1)
     paramsglobalcheck <- starts3
-    #assign('paramsglobalcheck', value = paramsglobalcheck, pos = 1)
+    assign('paramsglobalcheck', value = paramsglobalcheck, pos = 1)
     ldglobalcheck <- unlist(as.matrix(ldchoice))
-    #assign('ldglobalcheck', value = ldglobalcheck, pos = 1)
-    
-    # ldglobalcheck <- list(model=paste0(project, expname, mod.name), ldsumglobalcheck=ldsumglobalcheck,
-                          # paramsglobalcheck=paramsglobalcheck, ldglobalcheck=ldglobalcheck)
-    #assign("ldglobalcheck", value = ldglobalcheck, pos = 1)
+    assign('ldglobalcheck', value = ldglobalcheck, pos = 1)
 	
     return(ld)
     

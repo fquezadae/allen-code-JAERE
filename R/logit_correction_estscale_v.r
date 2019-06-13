@@ -1,5 +1,5 @@
 logit_correction_estscale_v <- function(starts3, dat, otherdat, alts) {
-    #' logit_correction
+    #' logit_correction that estimate scale instead of cost (for personal MC use)
     #'
     #' Full information model with Dahl's correction function
     #'
@@ -48,7 +48,8 @@ logit_correction_estscale_v <- function(starts3, dat, otherdat, alts) {
 	signum <- 1
     
     sigmaa <- as.matrix(starts3[((1 + gridlength) + 
-        1 + signum), ])  #end of vector
+        1 + signum), ])
+	#end of vector
 
 	obsnum <- dim(griddat)[1]
 	
@@ -107,7 +108,6 @@ logit_correction_estscale_v <- function(starts3, dat, otherdat, alts) {
 	Xvar <- matrix(c(griddat*matrix(locmove,obsnum,gridnum*alts), staymat, movemat), obsnum, dim(gridcoef)[1])
 
 	empcatches <- Xvar%*%gridcoef
-# crossprod(t(Xvar),(gridcoef))
 		
 	ldcatch <- matrix((-(0.5) * log(2 * pi)),obsnum) + (-(0.5) * log(matrix(sigmaa,obsnum)^2)) + 
 			(-(0.5) * (((yj - empcatches)/(matrix(sigmaa,obsnum)))^2))
@@ -120,9 +120,12 @@ logit_correction_estscale_v <- function(starts3, dat, otherdat, alts) {
         ld <- .Machine$double.xmax
     }
     
-    # ldsumglobalcheck <<- ld
-    # paramsglobalcheck <<- starts3
-    # ldglobalcheck <<- unlist(as.matrix(ld1))
+    ldsumglobalcheck <- ld
+    assign('ldsumglobalcheck', value = ldsumglobalcheck, pos = 1)
+    paramsglobalcheck <- starts3
+    assign('paramsglobalcheck', value = paramsglobalcheck, pos = 1)
+    ldglobalcheck <- unlist(as.matrix(ld1))
+    assign('ldglobalcheck', value = ldglobalcheck, pos = 1)
     
     return(ld)
     
