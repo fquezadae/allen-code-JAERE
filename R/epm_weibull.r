@@ -1,26 +1,60 @@
-epm_weibull_v <- function(starts3, dat, otherdat, alts) {
-    #' epm_weibull_v
+epm_weibull <- function(starts3, dat, otherdat, alts) {
+    #' Expected profit model weibull catch function
     #'
     #' Expected profit model weibull catch function
     #'
-    #' @param starts3 Starting values. e.g. c([grid-varying variables], [interaction variables], [catch variance], [scale parameter]).
-    #' @param dat Data matrix, see output from shift_sort_x, alternatives with distance by column bind
-    #' @param otherdat Other data used in model (as list). Any number of grid-varying variables (e.g. expected catch that varies by location) or 
-    #' interaction variables (e.g. vessel characteristics that affect how much disutility is suffered by traveling a greater distance) are allowed. \cr \cr
-    #' However, the user must place these in `otherdat` as list objects named `griddat` and `intdat` respectively. Note the variables #' within `griddat` 
-    #' and `intdat` have no naming restrictions. \cr \cr
-    #' Also note that `griddat` variables are  dimension *(number of observations) x #' (number of alternatives)*, while `intdat` variables are 
-    #' dimension *(number of observations) x 1*, to be interacted with the distance to each #' alternative. \cr \cr
+	#' @param starts3 Starting values as a vector (num). For this likelihood, the order takes:
+	#' c([catch function parameters], [cost (distance) parameters], [catch sigma(s)], [scale parameter]). \cr \cr
+	#' The catch function and cost parameters are of length (# of catch variables)*kk and (# of cost variables) respectively,
+	#' where kk equals the number of alternatives.
+	#' The catch sigma(s) are either of length 1 or length kk (if the analyst is estimating a location-specific catch parameter).
+	#' The scale parameter is of length 1.
+    #' @param dat Data matrix, see output from shift_sort_x, alternatives with distance.
+    #' @param otherdat Other data used in model (as list containing objects griddat, intdat, and prices). \cr \cr
+	#' For grid-specific variables griddat and cost variables to be interacted with distance intdat, any number of variables are allowed, as a list of matrices. 
+	#' Note the variables (each as a matrix) within `griddat` and `intdat` have no naming restrictions. 
+	#' Also note that `griddat` variables are dimension *(number of observations) x (number of alternatives)*, 
+	#' while `intdat` variables are dimension *(number of observations) x 1*, to be interacted with the distance to each alternative.
+	#' Grid-specific variables may correspond to catches that vary by location, 
+	#' or interaction variables may be vessel characteristics that affect how much disutility is suffered by traveling a greater distance.
+	#' Note in this likelihood the grid-specific variables are the variables in the catch equation, and
+	#' each variable varies across observations but not for each location: they are grid-specific due to the location-specific coefficients. 
     #' If there are no other data, the user can set `griddat` as ones with dimension *(number of observations) x (number of alternatives)*
-    #' and `intdat` variables as ones with dimension *(number of observations) x 1*.
-    #' @param alts Number of alternative choices in model
-    #' @param project Name of project
+    #' and `intdat` variables as ones with dimension *(number of observations) x 1*. \cr \cr
+	#' The variable prices is a matrix of dimension *(number of observations) x 1*, corresponding to prices.
+    #' @param alts Number of alternative choices in model as length 1 vector (num).
+	#' @param project Name of project
     #' @param expname Expected catch table
     #' @param mod.name Name of model run for model result output table
-    #' @return ld - negative log likelihood
+    #' @return ld: negative log likelihood
     #' @export
     #' @examples
-    #'
+	#' data(zi)
+	#' data(catch)
+	#' data(choice)
+	#' data(distance)
+	#' data(si)
+	#' data(prices)
+	#' 
+	#' catch[catch<0] <- 0.00001
+	#' #Note weibull catch distribution.
+	#'	
+	#' optimOpt <- c(1000,1.00000000000000e-08,1,0)
+	#' 
+	#' methodname <- "BFGS"
+	#' 
+	#' si2 <- sample(1:5,dim(si)[1],replace=TRUE)
+	#' zi2 <- sample(1:10,dim(zi)[1],replace=TRUE)
+	#'
+	#' otherdat <- list(griddat=list(si=as.matrix(cbind(si,si,si,si)),si2=as.matrix(cbind(si2,si2,si2,si2))),
+	#' 			intdat=list(zi=as.matrix(zi),zi2=as.matrix(zi2)),pricedat=list(prices=as.matrix(prices)))
+	#'
+	#' initparams <- c(2.5, 2.0, 1.5, 1.0, 1.1, 1.05, 0.9, 0.8, -0.8, -0.4, 3, 2, 3.5, 2.5, 1)
+	#' 
+	#' func <- epm_weibull
+	#' 
+	#' results <- discretefish_subroutine(catch,choice,distance,otherdat,initparams,optimOpt,func,methodname)
+	#'
 	
 	griddat <- as.matrix(do.call(cbind, otherdat$griddat))
     intdat <- as.matrix(do.call(cbind, otherdat$intdat))
