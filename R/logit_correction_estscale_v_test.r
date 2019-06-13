@@ -1,4 +1,4 @@
-logit_correction_estscale_v <- function(starts3, dat, otherdat, alts) {
+logit_correction_estscale_v_test <- function(starts3, dat, otherdat, alts) {
     #' logit_correction
     #'
     #' Full information model with Dahl's correction function
@@ -7,10 +7,10 @@ logit_correction_estscale_v <- function(starts3, dat, otherdat, alts) {
     #' @param dat Data matrix, see output from shift_sort_x, alternatives with distance by column bind
     #' @param otherdat Other data used in model (as list). Any number of grid-varying variables (e.g. expected catch that varies by location) or 
     #' interaction variables (e.g. vessel characteristics that affect how much disutility is suffered by traveling a greater distance) are allowed. \cr \cr
-    #' However, the user must place these in `otherdat` as list objects named `griddat` and `intdat` respectively. Note the variables 
-	#' within `griddat` and `intdat` have no naming restrictions. \cr \cr
-    #' Also note that `griddat` variables are dimension *(number of observations) x (number of alternatives)*, while `intdat` variables are 
-    #' dimension *(number of observations) x 1*, to be interacted with the distance to each alternative. \cr \cr
+    #' However, the user must place these in `otherdat` as list objects named `griddat` and `intdat` respectively. Note the variables #' within `griddat` 
+    #' and `intdat` have no naming restrictions. \cr \cr
+    #' Also note that `griddat` variables are  dimension *(number of observations) x #' (number of alternatives)*, while `intdat` variables are 
+    #' dimension *(number of observations) x 1*, to be interacted with the distance to each #' alternative. \cr \cr
     #' If there are no other data, the user can set `griddat` as ones with dimension *(number of observations) x (number of alternatives)*
     #' and `intdat` variables as ones with dimension *(number of observations) x 1*.
     #' @param alts Number of alternative choices in model
@@ -18,20 +18,19 @@ logit_correction_estscale_v <- function(starts3, dat, otherdat, alts) {
     #' @export
     #' @examples
     #'
-	
-	griddat <- as.matrix(do.call(cbind, otherdat$griddat))
-    intdat <- as.matrix(do.call(cbind, otherdat$intdat))
-	
-	gridnum <- dim(griddat)[2]/alts
-	intnum <- dim(intdat)[2]
-	#get number of variables
-	
+    
+    ld1 <- matrix(ncol=1, nrow=dim(dat)[1])
+
+    griddat <- (otherdat$griddat)
+    intdat <- (otherdat$intdat)
     startloc <- (otherdat$startloc)
     distance <- otherdat$distance
 	
 	polyn <- otherdat$polyn
-
-    starts3 <- as.matrix(starts3)
+	gridnum <- otherdat$gridnum
+	intnum <- otherdat$intnum
+	
+	starts3 <- as.matrix(starts3)
 	
 	revcoef <- as.matrix(starts3[1:1, ])
 	
@@ -52,16 +51,10 @@ logit_correction_estscale_v <- function(starts3, dat, otherdat, alts) {
 
 	obsnum <- dim(griddat)[1]
 	
-	#############################################
+#############################################
 
-	gridbetas <- (matrix(gridcoef[1:(alts*gridnum),],obsnum,alts*gridnum,byrow=TRUE)*griddat)
-	dim(gridbetas) <- c(nrow(gridbetas), alts, gridnum)
-	gridbetas <- rowSums(gridbetas,dim=2)
-	
-	intbetas <- .rowSums(intdat*matrix(intcoef,obsnum,intnum,byrow=TRUE),obsnum,intnum)
+	betas <- matrix(c(rep(revcoef,obsnum)*(matrix(gridcoef[1:alts,],obsnum,alts,byrow=TRUE)*griddat), intdat*intcoef),obsnum,(alts*gridnum)+intnum)
 
-	betas <- matrix(c((gridbetas*matrix(revcoef,obsnum,alts)), intbetas),obsnum,(alts+1))
-		
 	djztemp <- betas[1:obsnum,rep(1:ncol(betas), each = alts)]*dat[, 3:(dim(dat)[2])]
 	dim(djztemp) <- c(nrow(djztemp), ncol(djztemp)/(alts+1), alts+1)
 
@@ -72,10 +65,10 @@ logit_correction_estscale_v <- function(starts3, dat, otherdat, alts) {
 
 	ldchoice <- (-log(rowSums(exb)))
 
-	#############################################
+#############################################
 
-	revside <- gridbetas*matrix(revcoef,obsnum,alts)
-	costside <- distance*intbetas
+	revside <- rep(revcoef,obsnum)*(matrix(gridcoef[1:alts,],obsnum,alts,byrow=TRUE)*griddat)
+	costside <- distance*matrix(intdat,obsnum,alts)*matrix(intcoef,obsnum,alts)
 
 	probprof <- revside + costside
 
@@ -104,7 +97,7 @@ logit_correction_estscale_v <- function(starts3, dat, otherdat, alts) {
 	staymat <- matrix(c(locstay,(matrix(probstay,obsnum,alts*polyn)^matrix(rep(1:polyn,each=alts),obsnum,alts*polyn,byrow=TRUE))),obsnum,alts*(polyn+1))*
 		matrix((startloc == cj),obsnum,alts*(polyn+1)) #1 is for constant
 
-	Xvar <- matrix(c(griddat*matrix(locmove,obsnum,gridnum*alts), staymat, movemat), obsnum, dim(gridcoef)[1])
+	Xvar <- matrix(c(griddat*locmove, staymat, movemat), obsnum, dim(gridcoef)[1])
 
 	empcatches <- Xvar%*%gridcoef
 # crossprod(t(Xvar),(gridcoef))

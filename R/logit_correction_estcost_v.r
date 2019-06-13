@@ -19,17 +19,23 @@ logit_correction_estcost_v <- function(starts3, dat, otherdat, alts) {
     #' @examples
     #'
     
-    ld1 <- matrix(ncol=1, nrow=dim(dat)[1])
-
-    griddat <- (otherdat$griddat)
-    intdat <- (otherdat$intdat)
+    intdat <- as.matrix(unlist(otherdat$intdat))
+    griddat <- as.matrix(unlist(otherdat$griddat))
+    
+	obsnum <- dim(otherdat$griddat[[1]])[1]
+	
+	intdat <- matrix(intdat, obsnum, dim(intdat)[1]/obsnum)
+    griddat <- matrix(griddat, obsnum, dim(griddat)[1]/obsnum)
+	
+	gridnum <- dim(griddat)[2]/alts
+	intnum <- dim(intdat)[2]
+	#get number of variables
+	
     startloc <- (otherdat$startloc)
     distance <- otherdat$distance
 	
 	polyn <- otherdat$polyn
-	gridnum <- otherdat$gridnum
-	intnum <- otherdat$intnum
-	
+
     starts3 <- as.matrix(starts3)
 	
 	revcoef <- as.matrix(starts3[1:1, ])
@@ -40,20 +46,25 @@ logit_correction_estcost_v <- function(starts3, dat, otherdat, alts) {
     
 	signum <- 1
 
-	intcoef <- as.numeric(starts3[((1 + gridlength) + 
-        1 + signum), ])  #end of vector
+	intcoef <- as.numeric(starts3[(1 + 1 + gridlength):((1 + 1 + gridlength) + intnum - 1),]) 
 	
 	sigmac <- (1)
 	
-	sigmaa <- as.matrix(starts3[((1 + gridlength) + 
-            1), ])
+	sigmaa <- as.matrix(starts3[((1 + 1 + gridlength + intnum - 1) + 
+            1), ])  #end of vector
     
 	obsnum <- dim(griddat)[1]
 	
-#############################################
+	#############################################
 
-	betas <- matrix(c(rep(revcoef,obsnum)*(matrix(gridcoef[1:alts,],obsnum,alts,byrow=TRUE)*griddat), intdat*intcoef),obsnum,(alts*gridnum)+intnum)
+	gridbetas <- (matrix(gridcoef[1:(alts*gridnum),],obsnum,alts*gridnum,byrow=TRUE)*griddat)
+	dim(gridbetas) <- c(nrow(gridbetas), alts, gridnum)
+	gridbetas <- rowSums(gridbetas,dim=2)
+	
+	intbetas <- .rowSums(intdat*matrix(intcoef,obsnum,intnum,byrow=TRUE),obsnum,intnum)
 
+	betas <- matrix(c((gridbetas*matrix(revcoef,obsnum,alts)), intbetas),obsnum,(alts+1))
+		
 	djztemp <- betas[1:obsnum,rep(1:ncol(betas), each = alts)]*dat[, 3:(dim(dat)[2])]
 	dim(djztemp) <- c(nrow(djztemp), ncol(djztemp)/(alts+1), alts+1)
 
@@ -64,10 +75,10 @@ logit_correction_estcost_v <- function(starts3, dat, otherdat, alts) {
 
 	ldchoice <- (-log(rowSums(exb)))
 
-#############################################
+	#############################################
 
-	revside <- rep(revcoef,obsnum)*(matrix(gridcoef[1:alts,],obsnum,alts,byrow=TRUE)*griddat)
-	costside <- distance*matrix(intdat,obsnum,alts)*matrix(intcoef,obsnum,alts)
+	revside <- gridbetas*matrix(revcoef,obsnum,alts)
+	costside <- distance*intbetas
 
 	probprof <- revside + costside
 
@@ -96,7 +107,7 @@ logit_correction_estcost_v <- function(starts3, dat, otherdat, alts) {
 	staymat <- matrix(c(locstay,(matrix(probstay,obsnum,alts*polyn)^matrix(rep(1:polyn,each=alts),obsnum,alts*polyn,byrow=TRUE))),obsnum,alts*(polyn+1))*
 		matrix((startloc == cj),obsnum,alts*(polyn+1)) #1 is for constant
 
-	Xvar <- matrix(c(griddat*locmove, staymat, movemat), obsnum, dim(gridcoef)[1])
+	Xvar <- matrix(c(griddat*matrix(locmove,obsnum,gridnum*alts), staymat, movemat), obsnum, dim(gridcoef)[1])
 
 	empcatches <- Xvar%*%gridcoef
 # crossprod(t(Xvar),(gridcoef))
