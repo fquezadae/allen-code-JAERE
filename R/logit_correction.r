@@ -25,9 +25,6 @@ logit_correction <- function(starts3, dat, otherdat, alts) {
 	#' The variable polyn is a vector of length 1 corresponding to the chosen polynomial degree. \cr \cr
 	#' The variable distance is a matrix of dimension *(number of observations) x (number of alternatives)* corresponding to the distance to each alternative.
     #' @param alts Number of alternative choices in model as length 1 vector (num).
-	#' @param project Name of project
-    #' @param expname Expected catch table
-    #' @param mod.name Name of model run for model result output table
     #' @return ld: negative log likelihood
     #' @export
     #' @examples

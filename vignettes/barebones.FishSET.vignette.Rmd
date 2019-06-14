@@ -77,7 +77,7 @@ specific to the package-supplied conditional logit (`logit_c`) function (see doc
 
 ## To run models call the `discretefish_subroutine` function
 
-The user supplies initial parameters, optimization options and the likelihood function name, for a total of 7 total inputs.
+The user supplies initial parameters, optimization options, the likelihood function name, and the optimization method for a total of 8 inputs.
 For example:
   
 ```{r, echo=TRUE}
@@ -96,7 +96,7 @@ methodname <- "BFGS"
 #The optimization method chosen, which must be one of the base R `optim` options.
 ```
 
-The subroutine function takes in 7 inputs and outputs model results in a list that can be summarized as:
+The subroutine function takes in 8 inputs and outputs model results in a list that can be summarized as:
 
 	errorExplain - If it exists, a description of the model error.
 	OutLogit - A matrix of coefficients, standard errors, and t-statistics 

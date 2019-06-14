@@ -22,9 +22,6 @@ logit_avgcat <- function(starts3, dat, otherdat, alts) {
     #' If there are no other data, the user can set `griddat` as ones with dimension *(number of observations) x 1*
     #' and `intdat` variables as ones with dimension *(number of observations) x 1*.
     #' @param alts Number of alternative choices in model as length 1 vector (num).
-	#' @param project Name of project
-    #' @param expname Expected catch table
-    #' @param mod.name Name of model run for model result output table
     #' @return ld: negative log likelihood
     #' @export
     #' @examples

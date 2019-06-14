@@ -13,7 +13,7 @@ The grid-specific parameters function and cost parameters are of length (# of gr
 
 \item{dat}{Data matrix, see output from shift_sort_x, alternatives with distance.}
 
-\item{otherdat}{Other data used in model (as list containing objects griddat, intdat, and prices. \cr \cr
+\item{otherdat}{Other data used in model (as list containing objects griddat and intdat). \cr \cr
 For grid-specific variables griddat and cost variables to be interacted with distance intdat, any number of variables are allowed, as a list of matrices. 
 Note the variables (each as a matrix) within `griddat` and `intdat` have no naming restrictions.
 Grid-specific variables may correspond to catches that vary by location, 
@@ -26,12 +26,6 @@ If there are no other data, the user can set `griddat` as ones with dimension *(
 and `intdat` variables as ones with dimension *(number of observations) x 1*. \cr \cr}
 
 \item{alts}{Number of alternative choices in model as length 1 vector (num).}
-
-\item{project}{Name of project}
-
-\item{expname}{Expected catch table}
-
-\item{mod.name}{Name of model run for model result output table}
 }
 \value{
 ld: negative log likelihood

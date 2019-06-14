@@ -15,7 +15,7 @@ The catch function and cost parameters are of length (# of catch variables)*kk a
 
 \item{dat}{Data matrix, see output from shift_sort_x, alternatives with distance.}
 
-\item{otherdat}{Other data used in model (as list containing objects griddat, intdat, startloc, polyn, and distance. \cr \cr
+\item{otherdat}{Other data used in model (as list containing objects griddat, intdat, startloc, polyn, and distance). \cr \cr
 For grid-specific variables (griddat) and cost variables to be interacted with distance (intdat), any number of variables are allowed, as a list of matrices. 
 Note the variables (each as a matrix) within `griddat` and `intdat` have no naming restrictions. 
 Also note that `griddat` variables are dimension *(number of observations) x (number of alternatives)*, 
@@ -32,12 +32,6 @@ The variable polyn is a vector of length 1 corresponding to the chosen polynomia
 The variable distance is a matrix of dimension *(number of observations) x (number of alternatives)* corresponding to the distance to each alternative.}
 
 \item{alts}{Number of alternative choices in model as length 1 vector (num).}
-
-\item{project}{Name of project}
-
-\item{expname}{Expected catch table}
-
-\item{mod.name}{Name of model run for model result output table}
 }
 \value{
 ld: negative log likelihood

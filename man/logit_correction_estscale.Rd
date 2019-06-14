@@ -15,7 +15,7 @@ The catch function parameters are of length (# of catch variables)*kk.}
 
 \item{dat}{Data matrix, see output from shift_sort_x, alternatives with distance.}
 
-\item{otherdat}{Other data used in model (as list containing objects griddat, intdat, startloc, polyn, and distance. \cr \cr
+\item{otherdat}{Other data used in model (as list containing objects griddat, intdat, startloc, polyn, and distance). \cr \cr
 Any number of grid-specific variables are allowed, as a list of matrices. Note for this likelihood only one interaction variable
 is allowed (as we are estimating the scale parameter given a cost parameter set to (-1)), as a list of a single matrix. 
 Note the variables (each as a matrix) within `griddat` and `intdat` have no naming restrictions. 

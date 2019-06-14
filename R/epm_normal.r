@@ -23,9 +23,6 @@ epm_normal <- function(starts3, dat, otherdat, alts) {
     #' and `intdat` variables as ones with dimension *(number of observations) x 1*. \cr \cr
 	#' The variable prices is a matrix of dimension *(number of observations) x 1*, corresponding to prices.
     #' @param alts Number of alternative choices in model as length 1 vector (num).
-	#' @param project Name of project
-    #' @param expname Expected catch table
-    #' @param mod.name Name of model run for model result output table
     #' @return ld: negative log likelihood
     #' @export
     #' @examples
