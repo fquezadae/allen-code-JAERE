@@ -1,16 +1,19 @@
 explore_startparams <- function(space,startsr,dev,func,catch,choice,distance,otherdat) {
-#' explore_startparams
+#' Function to explore starting value parameter space
 #'
-#' Subroutine to run find better starting values by exploring starting value parameter space
+#' Shotgun method to find better starting values by exploring starting value parameter space
 #'
-#' @param space Number of starting value permutations to test (the size of the space to explore)
-#' @param startsr Average starting value parameters for revenue/location-specific covariates then cost/distance
-#' @param dev How far to deviate from the average parameter values when exploring (random normal deviates)
-#' @param func Name of likelihood function
-#' @param catch Data corresponding to actual zonal choice
-#' @param choice Data corresponding to actual catch
-#' @param distance Data corresponding to distance
-#' @param otherdat Other data (as a list)
+#' @param space Number of starting value permutations to test (the size of the space to explore). The greater the
+#' dev parameter the larger the space parameter should be.
+#' @param startsr Average starting value parameters for revenue/location-specific covariates then cost/distance.
+#' The best guess at what the starting value parameters should be (e.g. all ones).
+#' @param dev How far to deviate from the average parameter values when exploring (random normal deviates).
+#' The less certain the average parameters are, the greater the dev parameter should be.
+#' @param func Name of likelihood function to test.
+#' @param catch Data corresponding to actual zonal choice.
+#' @param choice Data corresponding to actual catch.
+#' @param distance Data corresponding to distance.
+#' @param otherdat Other data (as a list, corresponding to the likelihood function you want to test.
 #' @return
 #' newstart - Chosen starting values with smallest likelihood \cr 
 #' saveLLstarts - Likelihood values for each starting value permutation \cr 
