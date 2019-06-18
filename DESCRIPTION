@@ -1,9 +1,10 @@
 Package: barebones.FishSET
 Title: Barebones discrete choice modeling
 Version: 0.0.0.9000
-Authors@R: person("Fishy", "McFishperson", email = "allen.chen@noaa.gov",
-  role = c("aut", "cre"))
-Description: Barebones discrete choice modeling
+Authors@R: person("Fishy", "McFishperson", email = "allen.chen@noaa.gov", role = c("aut", "cre"))
+Description: Barebones version of the discrete choice modeling package FishSET, written for base R. 
+	Includes an extra likelihood for Monte Carlo testing using Dahl's (2002 Econometrica) correction function, 
+	as seen in Chen, Haynie, and Anderson (in review).
 Depends: R (>= 3.4.2)
 License: Do not distribute
 Encoding: UTF-8
