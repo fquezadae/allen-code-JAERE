@@ -34,12 +34,11 @@ ld: negative log likelihood
 Conditional logit likelihood
 }
 \examples{
-data(zi)
+#' data(zi)
 data(catch)
 data(choice)
 data(distance)
 data(si)
-data(prices)
 
 optimOpt <- c(1000,1.00000000000000e-08,1,0)
 

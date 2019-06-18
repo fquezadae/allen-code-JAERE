@@ -21,13 +21,11 @@ logit_c <- function(starts3, dat, otherdat, alts) {
     #' @param alts Number of alternative choices in model as length 1 vector (num).
     #' @return ld: negative log likelihood
     #' @export
-    #' @examples
-	#' data(zi)
+    #' @examples	#' data(zi)
 	#' data(catch)
 	#' data(choice)
 	#' data(distance)
 	#' data(si)
-	#' data(prices)
 	#' 
 	#' optimOpt <- c(1000,1.00000000000000e-08,1,0)
 	#' 

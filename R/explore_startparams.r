@@ -20,6 +20,33 @@ explore_startparams <- function(space,startsr,dev,func,catch,choice,distance,oth
 #' savestarts - Starting value permuations (corresponding to each saved likelihood value) \cr 
 #' @export
 #' @examples
+#' data(zi)
+#' data(catch)
+#' data(choice)
+#' data(distance)
+#' data(si)
+#' data(prices)
+#'
+#' space <- 15
+#' startsr <- rep(1,7)
+#' dev <- 3
+#' func <- epm_normal
+#'
+#' otherdat <- list(griddat=list(si=as.matrix(cbind(si,si,si,si))),
+#' 			intdat=list(zi=as.matrix(zi)),pricedat=list(prices=as.matrix(prices)))
+#'
+#' explore_startparams(space,startsr,dev,func,catch,choice,distance,otherdat)
+#'
+#' startsr <- c(0.5, 0.4, 0.3, 0.2, -0.4, 2, 1)
+#' explore_startparams(space,startsr,dev,func,catch,choice,distance,otherdat)
+#'
+#' space <- 100
+#' dev <- 1
+#'
+#' results <- explore_startparams(space,startsr,dev,func,catch,choice,distance,otherdat)
+#' results$newstart
+#' min(unlist(results$saveLLstarts))
+#' match(min(unlist(results$saveLLstarts)),unlist(results$saveLLstarts))
 #'
 
 fr <- func #e.g. clogit
@@ -27,7 +54,7 @@ fr <- func #e.g. clogit
 ab <- max(choice) + 1 #no interactions in create_logit_input - interact distances in likelihood function instead
 dataCompile <- create_logit_input(choice)
 
-d <- shiftSortX(dataCompile,choice,catch,distance,max(choice),ab)
+d <- shift_sort_x(dataCompile,choice,catch,distance,max(choice),ab)
 
 savestarts <- list()
 saveLLstarts <- list()
