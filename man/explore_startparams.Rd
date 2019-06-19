@@ -12,7 +12,8 @@ explore_startparams(space, startsr, dev, func, catch, choice, distance,
 dev parameter the larger the space parameter should be.}
 
 \item{startsr}{Average starting value parameters for revenue/location-specific covariates then cost/distance.
-The best guess at what the starting value parameters should be (e.g. all ones).}
+The best guess at what the starting value parameters should be (e.g. all ones). Should correspond to the
+likelihood and data that you want to test.}
 
 \item{dev}{How far to deviate from the average parameter values when exploring (random normal deviates).
 The less certain the average parameters are, the greater the dev parameter should be.}
@@ -25,7 +26,7 @@ The less certain the average parameters are, the greater the dev parameter shoul
 
 \item{distance}{Data corresponding to distance.}
 
-\item{otherdat}{Other data (as a list, corresponding to the likelihood function you want to test.}
+\item{otherdat}{Other data (as a list, corresponding to the likelihood function you want to test.)}
 }
 \value{
 newstart - Chosen starting values with smallest likelihood \cr 

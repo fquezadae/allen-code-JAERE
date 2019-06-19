@@ -34,7 +34,7 @@ ld: negative log likelihood
 Conditional logit likelihood
 }
 \examples{
-#' data(zi)
+data(zi)
 data(catch)
 data(choice)
 data(distance)
