@@ -7,25 +7,37 @@
 logit_c(starts3, dat, otherdat, alts)
 }
 \arguments{
-\item{starts3}{Starting values as a vector (num). For this likelihood, the order takes:
-c([grid-specific parameters], [cost (distance) parameters]). \cr \cr
-The grid-specific parameters function and cost parameters are of length (# of grid-specific variables) and (# of cost parameters) respectively.}
+\item{starts3}{Starting values as a vector (num). For this likelihood,
+the order takes: c([grid-specific parameters], [cost (distance)
+parameters]). \cr \cr
+The grid-specific parameters function and cost parameters are of
+length (# of grid-specific variables) and (# of cost parameters)
+respectively.}
 
-\item{dat}{Data matrix, see output from shift_sort_x, alternatives with distance.}
+\item{dat}{Data matrix, see output from shift_sort_x, alternatives with
+distance.}
 
-\item{otherdat}{Other data used in model (as list containing objects griddat and intdat). \cr \cr
-For grid-specific variables griddat and cost variables to be interacted with distance intdat, any number of variables are allowed, as a list of matrices. 
-Note the variables (each as a matrix) within `griddat` and `intdat` have no naming restrictions.
-Grid-specific variables may correspond to catches that vary by location, 
-or interaction variables may be vessel characteristics that affect how much disutility is suffered by traveling a greater distance.
-Note in this likliehood the grid-specific variables vary across alternatives,
-where each variable may have been estimated in a previous procedure.
-Also note that `griddat` variables are dimension *(number of observations) x (number of alternatives)*, 
-while `intdat` variables are dimension *(number of observations) x 1*, to be interacted with the distance to each alternative.
-If there are no other data, the user can set `griddat` as ones with dimension *(number of observations) x (number of alternatives)*
-and `intdat` variables as ones with dimension *(number of observations) x 1*. \cr \cr}
+\item{otherdat}{Other data used in model (as list containing objects
+griddat and intdat). \cr \cr
+For grid-specific variables `griddat` and cost variables to be
+interacted with distance `intdat`, any number of variables are
+allowed, as a list of matrices. Note the variables (each as a matrix)
+within `griddat` and `intdat` have no naming restrictions.
+Grid-specific variables may correspond to catches that vary by
+location, or interaction variables may be vessel characteristics that
+affect how much disutility is suffered by traveling a greater
+distance. Note in this likliehood the grid-specific variables vary
+across alternatives, where each variable may have been estimated in a 
+previous procedure. Also note that `griddat` variables are dimension
+*(number of observations) x (number of alternatives)*, while `intdat`
+variables are dimension *(number of observations) x 1*, to be
+interacted with the distance to each alternative. If there are no
+other data, the user can set `griddat` as ones with dimension
+*(number of observations) x (number of alternatives)* and `intdat`
+variables as ones with dimension *(number of observations) x 1*.}
 
-\item{alts}{Number of alternative choices in model as length 1 vector (num).}
+\item{alts}{Number of alternative choices in model as length 1 vector
+(num).}
 }
 \value{
 ld: negative log likelihood
@@ -42,20 +54,22 @@ data(si)
 
 optimOpt <- c(1000,1.00000000000000e-08,1,0)
 
-methodname <- "BFGS"
+methodname <- 'BFGS'
 
 kk <- 4
 
 si2 <- matrix(sample(1:5,dim(si)[1]*kk,replace=TRUE),dim(si)[1],kk)
 zi2 <- sample(1:10,dim(zi)[1],replace=TRUE)
 
-otherdat <- list(griddat=list(predicted_catch=as.matrix(predicted_catch),si2=as.matrix(si2)),
-		intdat=list(zi=as.matrix(zi),zi2=as.matrix(zi2)))
+otherdat <- list(griddat=list(predicted_catch=as.matrix(predicted_catch),
+    si2=as.matrix(si2)), intdat=list(zi=as.matrix(zi),
+    zi2=as.matrix(zi2)))
 
 initparams <- c(2.5, 2, -1, -2)
 
 func <- logit_c
 
-results <- discretefish_subroutine(catch,choice,distance,otherdat,initparams,optimOpt,func,methodname)
+results <- discretefish_subroutine(catch,choice,distance,otherdat,
+    initparams,optimOpt,func,methodname)
 
 }

@@ -10,7 +10,7 @@ create_logit_input(choice)
 \item{choice}{A (number of observations) x 1 vector of chosen locations}
 }
 \value{
-dataCompile - a data matrix
+dataCompile: a data matrix
 }
 \description{
 Creates a data matrix that is consistent with the built in model forms

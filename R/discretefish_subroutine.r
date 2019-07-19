@@ -8,18 +8,18 @@ discretefish_subroutine <- function(catch, choice, distance, otherdat,
     #' @param choice Data corresponding to actual catch
     #' @param distance Data corresponding to distance
     #' @param otherdat Other data (as a list)
-    #' @param initparams Initial parameter estimates for 
-	#' revenue/location-specific covariates then cost/distance
+    #' @param initparams Initial parameter estimates for
+	#'     revenue/location-specific covariates then cost/distance
     #' @param optimOpt Optimization options [max iterations, (reltol) tolerance
-	#' of x, report frequency, whether to report]
+	#'     of x, report frequency, whether to report]
     #' @param func Name of likelihood function
     #' @param methodname Optimization method (see optim options)
     #' @return
-    #' OutLogit - [outmat1 se1 tEPM2] (coefs, ses, tstats) \cr 
-    #' optoutput - optimization information \cr 
-    #' seoumat2 - ses \cr 
-    #' MCM - Model Comparison metrics \cr 
-    #' H1 - inverse hessian \cr 
+    #' OutLogit: [outmat1 se1 tEPM2] (coefs, ses, tstats) \cr
+    #' optoutput: optimization information \cr
+    #' seoumat2: ses \cr
+    #' MCM: Model Comparison metrics \cr
+    #' H1: inverse hessian \cr
     #' @export
     #' @examples
     #'
@@ -46,12 +46,12 @@ discretefish_subroutine <- function(catch, choice, distance, otherdat,
     
     if (is.null(LL_start) || is.nan(LL_start) || is.infinite(LL_start)) {
 	
-        # haven't checked what happens when error yet
         errorExplain <- "Initial function results bad (Nan, Inf, or undefined),
 		    check 'ldglobalcheck'"
         return("Initial function results bad (Nan, Inf, or undefined),
 		    check 'ldglobalcheck'")
-	
+	        # haven't checked what happens when error yet
+    
     }
     
     mIter <- optimOpt[1]
@@ -59,7 +59,6 @@ discretefish_subroutine <- function(catch, choice, distance, otherdat,
     relTolX <- optimOpt[2]
     reportfreq <- optimOpt[3]
     detailreport <- optimOpt[4]
-    
     
     controlin <- list(trace = detailreport, maxit = mIter, reltol = relTolX,
 	    REPORT = reportfreq)
@@ -78,7 +77,7 @@ discretefish_subroutine <- function(catch, choice, distance, otherdat,
     
     q2 <- res[["par"]]
     LL <- res[["value"]]
-    output <- list(counts = res[["counts"]], convergence = res[["convergence"]], 
+    output <- list(counts = res[["counts"]], convergence = res[["convergence"]],
         optim_message = res[["message"]])
     H <- res[["hessian"]]
     

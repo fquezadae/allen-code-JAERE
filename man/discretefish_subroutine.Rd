@@ -16,20 +16,22 @@ discretefish_subroutine(catch, choice, distance, otherdat, initparams,
 
 \item{otherdat}{Other data (as a list)}
 
-\item{initparams}{Initial parameter estimates for revenue/location-specific covariates then cost/distance}
+\item{initparams}{Initial parameter estimates for
+revenue/location-specific covariates then cost/distance}
 
-\item{optimOpt}{Optimization options [max iterations, (reltol) tolerance of x, report frequency, whether to report]}
+\item{optimOpt}{Optimization options [max iterations, (reltol) tolerance
+of x, report frequency, whether to report]}
 
 \item{func}{Name of likelihood function}
 
 \item{methodname}{Optimization method (see optim options)}
 }
 \value{
-OutLogit - [outmat1 se1 tEPM2] (coefs, ses, tstats) \cr 
-optoutput - optimization information \cr 
-seoumat2 - ses \cr 
-MCM - Model Comparison metrics \cr 
-H1 - inverse hessian \cr
+OutLogit: [outmat1 se1 tEPM2] (coefs, ses, tstats) \cr
+optoutput: optimization information \cr
+seoumat2: ses \cr
+MCM: Model Comparison metrics \cr
+H1: inverse hessian \cr
 }
 \description{
 Subroutine to run chosen discrete choice model
