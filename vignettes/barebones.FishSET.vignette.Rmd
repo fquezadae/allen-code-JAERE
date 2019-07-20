@@ -16,15 +16,21 @@ knitr::opts_chunk$set(
 )
 ```
 
-Runs discrete choice models. If you run into problems you can contact allen.chen@noaa.gov.
+Runs discrete choice models. If you run into problems you can contact
+allen.chen@noaa.gov.
 
-- User supplies `catch`, `choice`, and `distance` data, plus any other data `otherdat` they need to run their chosen likelihood.
-- Currently ships with a conditional logit function `logit_c`, an average catch logit function `logit_avgcat`, a full information likelihood with correction function `logit_correction`,
-an expected profit model with a normally distributed catch function `epm_normal`, an expected profit model with a log-normally distributed catch function `epm_lognormal`, 
-and an expected profit model with a weibull distributed catch function `epm_weibull`.
+- User supplies `catch`, `choice`, and `distance` data, plus any other data
+`otherdat` they need to run their chosen likelihood.
+- Currently ships with a conditional logit function `logit_c`, an average catch
+logit function `logit_avgcat`, a full information likelihood with correction
+function `logit_correction`, an expected profit model with a normally
+distributed catch function `epm_normal`, an expected profit model with a
+log-normally distributed catch function `epm_lognormal`, and an expected profit
+model with a weibull distributed catch function `epm_weibull`.
 
 ## Data
-The user supplies `catch`, `choice`, and `distance` data. The data `catch` and `choice` should be dimensions *(number of observations) x 1*.
+The user supplies `catch`, `choice`, and `distance` data. The data `catch` and
+`choice` should be dimensions *(number of observations) x 1*.
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 zi <- read.csv("zi.csv", header=FALSE)
@@ -40,78 +46,93 @@ predicted_catch$V3 <- as.numeric(predicted_catch$V3)
 
 distance <- read.csv("distance.csv", header=FALSE)
 
-otherdat <- list(griddat=list(si=as.matrix(predicted_catch)), intdat=list(zi=as.matrix(zi)))
-			
+otherdat <- list(griddat=list(si=as.matrix(predicted_catch)),
+    intdat=list(zi=as.matrix(zi)))
+
 library(barebones.FishSET)
 ```
-(Simulated catch and choice data are included in this package i.e. `data(catch)`.)
+(Simulated catch and choice data are included in this package i.e.
+`data(catch)`.)
 ```{r, echo=TRUE}
 str(catch)
 str(choice)
 ```
 
-The `distance` data should be dimensions *(number of observations) x (number of alternatives)*.
-(Simulated distance data is included in this package i.e. `data(distance)`.)
+The `distance` data should be dimensions *(number of observations) x
+(number of alternatives)*. (Simulated distance data is included in this package
+i.e. `data(distance)`.)
 ```{r, echo=TRUE}
 str(distance)
 ```
 
-Other data may be something like `predicted_catch` for each alternative (e.g. with dimensions *(number of observations) x (number of alternatives)*). 
-This data could be constructed by the user before estimation of the discrete choice model, for example by looking at a moving average of historical catches. 
-Below is an example of predicted catches, as well as a data frame `zi` representing harvester characteristics. 
-(Simulated harvester characteristics and predicted data are included in this package i.e. `data(predicted_catch)`.)
+Other data may be something like `predicted_catch` for each alternative (e.g.
+with dimensions *(number of observations) x (number of alternatives)*). This
+data could be constructed by the user before estimation of the discrete choice
+model, for example by looking at a moving average of historical catches. Below
+is an example of predicted catches, as well as a data frame `zi` representing
+harvester characteristics. (Simulated harvester characteristics and predicted
+data are included in this package i.e. `data(predicted_catch)`.)
 ```{r, echo=TRUE}
 str(otherdat)
 ```
 
-For the `logit_c` function, any number of grid-specific variables (e.g. expected catch that varies by location) or interaction 
-variables (e.g. vessel characteristics that affect how much disutility is suffered by traveling a greater distance) are allowed. 
-However, the user must place these in `otherdat` as list objects named `griddat` and `intdat` respectively. Note the variables 
-within `griddat` and `intdat` have no naming restrictions. Also note that for this likelihood `griddat` variables are dimension 
-*(number of observations) x (number of alternatives)*, while `intdat` variables are dimension *(number of observations) x 1*,
-to be interacted with the distance to each alternative.  
+For the `logit_c` function, any number of grid-specific variables (e.g. expected
+catch that varies by location) or interaction variables (e.g. vessel
+characteristics that affect how much disutility is suffered by traveling a
+greater distance) are allowed. However, the user must place these in `otherdat`
+as list objects named `griddat` and `intdat` respectively. Note the variables
+within `griddat` and `intdat` have no naming restrictions. Also note that for
+this likelihood `griddat` variables are dimension *(number of observations) x
+(number of alternatives)*, while `intdat` variables are dimension *(number of
+observations) x 1*, to be interacted with the distance to each alternative.
 
-If there are no other data, the user can set `griddat` as ones with dimension *(number of observations) x (number of alternatives)* and `intdat` 
-variables as ones with dimension *(number of observations) x 1*. Finally, users can write their own likelihoods, and this example is 
-specific to the package-supplied conditional logit (`logit_c`) function (see documentation for other likelihoods).
+If there are no other data, the user can set `griddat` as ones with dimension
+*(number of observations) x (number of alternatives)* and `intdat` variables as
+ones with dimension *(number of observations) x 1*. Finally, users can write
+their own likelihoods, and this example is specific to the package-supplied
+conditional logit (`logit_c`) function (see documentation for other
+likelihoods).
 
 ## To run models call the `discretefish_subroutine` function
 
-The user supplies initial parameters, optimization options, the likelihood function name, and the optimization method for a total of 8 inputs.
-For example:
-  
+The user supplies initial parameters, optimization options, the likelihood
+function name, and the optimization method for a total of 8 inputs. For example:
+
 ```{r, echo=TRUE}
 initparams <- c(2.5, -0.8)
 #Initial paramters for revenue then cost.
 
 optimOpt <- c(1000,1.00000000000000e-08,1,1)
-#Optimization options for the maximum iterations, 
-#the relative tolerance of x, report frequency, 
-#and whether to report iterations.
+#Optimization options for the maximum iterations, the relative tolerance of x,
+    #report frequency, and whether to report iterations.
 
 func <- logit_c
 #The conditional logit likelihood function.
 
 methodname <- "BFGS"
-#The optimization method chosen, which must be one of the base R `optim` options.
+#The optimization method chosen, which must be one of the base R `optim`
+    #options.
 ```
 
-The subroutine function takes in 8 inputs and outputs model results in a list that can be summarized as:
+The subroutine function takes in 8 inputs and outputs model results in a list
+that can be summarized as:
 
-	errorExplain - If it exists, a description of the model error.
-	OutLogit - A matrix of coefficients, standard errors, and t-statistics 
-	optoutput - Optimization information (such as number of function iterations)
-	seoutmat2 - Standard errors
-	MCM - Model comparison metrics (e.g. AIC, BIC)
-	H1 - The inverse hessian 
-	
+	errorExplain: If it exists, a description of the model error.
+	OutLogit: A matrix of coefficients, standard errors, and t-statistics
+	optoutput: Optimization information (such as number of function iterations)
+	seoutmat2: Standard errors
+	MCM: Model comparison metrics (e.g. AIC, BIC)
+	H1: The inverse hessian
+
 ```{r, echo=TRUE}
-results <- discretefish_subroutine(catch,choice,distance,otherdat,initparams,optimOpt,func,methodname)
+results <- discretefish_subroutine(catch,choice,distance,otherdat,initparams,
+    optimOpt,func,methodname)
 results
 ```
 
-The true marginal utility from catch in this data-generating process was equal to 3, and the true disutility from distance was equal to -1. 
-The model estimates are correct relative to some unknown scale parameter:
+The true marginal utility from catch in this data-generating process was equal
+to 3, and the true disutility from distance was equal to -1. The model estimates
+are correct relative to some unknown scale parameter:
 
 ```{r, echo=TRUE}
 results$OutLogit[1,1]/results$OutLogit[2,1]
