@@ -6,48 +6,56 @@ logit_correction_estscale <- function(starts3, dat, otherdat, alts) {
 	#'     scale instead of cost (for personal MC use)
     #'
     #' @param starts3 Starting values as a vector (num). For this likelihood,
-	#'     the order takes: c([marginal utility from catch], [catch function
+	#'     the order takes: c([marginal utility from catch], [catch-function
 	#'     parameters], [polynomial starting parameters], [catch sigma], [scale
 	#'     parameter]). \cr \cr
     #'     The number of polynomial interaction terms is currently set to 2, so
 	#'     given the chosen degree 'polyn' there should be
-	#'     (((polyn+1)*2) + 2)*kk polynomial starting parameters, where kk
+	#'     (((polyn+1)*2) + 2)*(k) polynomial starting parameters, where (k)
 	#'     equals the number of alternatives. The marginal utility from catch,
 	#'     scale parameter, and catch sigma are of length 1 respectively. The
-	#'     catch function parameters are of length (# of catch variables)*kk.
+	#'     catch-function parameters are of length (# of catch variables)*(k).
     #' @param dat Data matrix, see output from shift_sort_x, alternatives with
 	#'     distance.
     #' @param otherdat Other data used in model (as list containing objects
-	#'     griddat, intdat, startloc, polyn, and distance). \cr \cr
-    #'     Any number of grid-specific variables are allowed, as a list of
-	#'     matrices. Note for this likelihood only one interaction variable
-    #'     is allowed (as we are estimating the scale parameter given a cost
-	#'     parameter set to (-1)), as a list of a single matrix. Note the
-	#'     variables (each as a matrix) within `griddat` and `intdat` have no
-	#'     naming restrictions. Also note that `griddat` variables are dimension
-	#'     *(number of observations) x (number of alternatives)*, while `intdat`
-	#'     variables are dimension *(number of observations) x 1*, to be
-	#'     interacted with the distance to each alternative. Grid-specific
-	#'     variables may correspond to catches that vary by location, or
-	#'     interaction variables may be vessel characteristics that affect how
-	#'     much disutility is suffered by traveling a greater distance. Note in
-	#'     this likelihood the grid-specific variables are the variables in the
-	#'     catch equation, and each variable varies across observations but not
-	#'     for each location: they are grid-specific due to the
-	#'     location-specific coefficients. If there are no other data, the user
-	#'     can set `griddat` as ones with dimension *(number of observations) x
-	#'     (number of alternatives)* and `intdat` variables as ones with
-	#'     dimension *(number of observations) x 1*. \cr \cr
+	#'     `griddat`, `intdat`, `startloc`, `polyn`, and `distance`). \cr \cr
+    #'     For catch-function variables (`griddat`) alternative-invariant
+    #'     variables that are interacted with zonal constants to form the catch
+    #'     portion of the likelihood. Each variable name therefore corresponds
+    #'     to data with dimensions (number of observations) by (unity), and
+	#'     returns (k) parameters where (k) equals the number of alternatives.
+	#'     For travel-distance variables alternative-invariant
+    #'     variables that are interacted with travel distance to form the cost
+    #'     portion of the likelihood. Each variable name therefore corresponds
+    #'     to data with dimensions (number of observations) by (unity), and
+    #'     returns a single parameter. Any number of catch-function variables
+	#'     (`griddat`) are allowed, as a list of matrices. Note for this
+	#'     likelihood only one travel-distance variable is allowed (as we are
+	#'     estimating the scale parameter given a travel-distance parameter set
+	#'     to (-1)), as a list of a single matrix. Note the variables (each as a
+	#'     matrix) within `griddat` and `intdat` have no naming restrictions. 
+	#'     \cr \cr.
+	#'     Catch function variables may correspond to variables that affect
+	#'     catches across locations, or travel-distance variables may be vessel
+	#'     characteristics that affect how much disutility is suffered by
+	#'     traveling a greater distance. Note in this likelihood the
+	#'     catch-function variables vary across observations but not for each
+	#'     location: they are allowed to affect catches across locations due to
+	#'     the location-specific coefficients. If there are no other data, the
+	#'     user can set catch-function variables as ones with dimension
+	#'     (number of observations) by (number of alternatives) and
+	#'     travel-distance variables as ones with dimension (number of 
+	#'     observations) by (unity). \cr \cr
     #'     The variable startloc is a matrix of dimension
-	#'     *(number of observations) x 1*, that corresponds to the starting
+	#'     (number of observations) by (unity), that corresponds to the starting
 	#'     location when the agent decides between alternatives. \cr \cr
-    #'     The variable polyn is a vector of length 1 corresponding to the
-	#'     chosen polynomial degree. \cr \cr
+    #'     The variable polyn is a vector of length equal to unity corresponding
+	#'     to the chosen polynomial degree. \cr \cr
     #'     The variable distance is a matrix of dimension
-	#'     *(number of observations) x (number of alternatives)* corresponding
+	#'     (number of observations) by (number of alternatives) corresponding
 	#'     to the distance to each alternative.
-    #' @param alts Number of alternative choices in model as length 1 vector
-	#'     (num).
+    #' @param alts Number of alternative choices in model as length equal to
+    #'     unity (as a numeric vector).
     #' @return ld: negative log likelihood
     #' @section Details:
     #'     The computation of the Nth Fibonacci number in this function uses the
@@ -77,8 +85,8 @@ logit_correction_estscale <- function(starts3, dat, otherdat, alts) {
     #'
     #' si2 <- sample(1:5,dim(si)[1],replace=TRUE)
     #'
-    #' otherdat <- list(griddat=list(si=as.matrix(cbind(si,si,si,si)),
-	#'     si2=as.matrix(cbind(si2,si2,si2,si2))),intdat=list(zi=as.matrix(zi)),
+    #' otherdat <- list(griddat=list(si=as.matrix(si),si2=as.matrix(si2)),
+    #'     intdat=list(zi=as.matrix(zi),zi2=as.matrix(zi2)),
 	#'     startloc=as.matrix(startloc),polyn=polyn,
 	#'     distance=as.matrix(distance))
     #'
@@ -91,12 +99,14 @@ logit_correction_estscale <- function(starts3, dat, otherdat, alts) {
 	#'     initparams,optimOpt,func,methodname)
     #'
     
-    griddat <- as.matrix(do.call(cbind, otherdat$griddat))
+    obsnum <- dim(griddat)[1]
+
+	griddat <- as.matrix(do.call(cbind, otherdat$griddat))
+    gridnum <- dim(griddat)[2]
+	griddat <- matrix(apply(griddat, 2, function(x) rep(x,times=alts)), obsnum,
+	    gridnum*alts)
     intdat <- as.matrix(do.call(cbind, otherdat$intdat))
-    
-    gridnum <- dim(griddat)[2]/alts
-    intnum <- dim(intdat)[2]
-    # get number of variables
+	intnum <- dim(intdat)[2]
     
     startloc <- (otherdat$startloc)
     distance <- otherdat$distance
@@ -118,8 +128,6 @@ logit_correction_estscale <- function(starts3, dat, otherdat, alts) {
     
     sigmac <- as.matrix(starts3[((1 + gridlength) + 1 + signum), ])
     # end of vector
-    
-    obsnum <- dim(griddat)[1]
     
     gridbetas <- (matrix(gridcoef[1:(alts * gridnum), ], obsnum, alts * gridnum,
         byrow = TRUE) * griddat)
