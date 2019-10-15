@@ -3,30 +3,30 @@ explore_startparams <- function(space, startsr, dev, func, catch, choice,
     #' Function to explore starting value parameter space
     #'
     #' Shotgun method to find better starting values by exploring starting value
-	#'      parameter space
+    #'      parameter space
     #'
     #' @param space Number of starting value permutations to test (the size of
     #'     the space to explore). The greater the dev parameter the larger the
-	#'     space parameter should be.
+    #'     space parameter should be.
     #' @param startsr Average starting value parameters for
-	#'     revenue/location-specific covariates then cost/distance. The best
-	#'     guess at what the starting value parameters should be (e.g. all
+    #'     revenue/location-specific covariates then cost/distance. The best
+    #'     guess at what the starting value parameters should be (e.g. all
     #'     ones). Should correspond to the likelihood and data that you want to
-	#'     test.
+    #'     test.
     #' @param dev How far to deviate from the average parameter values when
-	#'     exploring (random normal deviates). The less certain the average
-	#'     parameters are, the greater the dev parameter should be.
+    #'     exploring (random normal deviates). The less certain the average
+    #'     parameters are, the greater the dev parameter should be.
     #' @param func Name of likelihood function to test.
     #' @param catch Data corresponding to actual zonal choice.
     #' @param choice Data corresponding to actual catch.
     #' @param distance Data corresponding to distance.
     #' @param otherdat Other data (as a list, corresponding to the likelihood
-	#'     function you want to test.)
+    #'     function you want to test.)
     #' @return
     #' newstart: Chosen starting values with smallest likelihood \cr
     #' saveLLstarts: Likelihood values for each starting value permutation \cr
     #' savestarts: Starting value permuations (corresponding to each saved
-	#'     likelihood value) \cr
+    #'     likelihood value) \cr
     #' @export
     #' @examples
     #' data(zi)
@@ -43,31 +43,31 @@ explore_startparams <- function(space, startsr, dev, func, catch, choice,
     #'
     #' otherdat <- list(griddat=list(si=as.matrix(cbind(si,si,si,si))),
     #'     intdat=list(zi=as.matrix(zi)),
-	#'     pricedat=list(prices=as.matrix(prices)))
+    #'     pricedat=list(prices=as.matrix(prices)))
     #'
     #' explore_startparams(space,startsr,dev,func,catch,choice,distance,
-	#'     otherdat)
+    #'     otherdat)
     #'
     #' startsr <- c(0.5, 0.4, 0.3, 0.2, -0.4, 2, 1)
     #' explore_startparams(space,startsr,dev,func,catch,choice,distance,
-	#'     otherdat)
+    #'     otherdat)
     #'
     #' space <- 100
     #' dev <- 1
     #'
     #' results <- explore_startparams(space,startsr,dev,func,catch,choice,
-	#'     distance,otherdat)
+    #'     distance,otherdat)
     #' results$newstart
     #' min(unlist(results$saveLLstarts))
     #' match(min(unlist(results$saveLLstarts)),unlist(results$saveLLstarts))
     #'
     
     fr <- func
-	# e.g. clogit
+    # e.g. clogit
     
     ab <- max(choice) + 1
-	# no interactions in create_logit_input - interact distances in likelihood
-	    # function instead
+    # no interactions in create_logit_input - interact distances in likelihood
+        # function instead
     dataCompile <- create_logit_input(choice)
     
     d <- shift_sort_x(dataCompile, choice, catch, distance, max(choice), ab)
@@ -89,6 +89,6 @@ explore_startparams <- function(space, startsr, dev, func, catch, choice,
     newstart <- savestarts[[minindex]]
     
     return(list(newstart = newstart, saveLLstarts = saveLLstarts,
-	    savestarts = savestarts))
+        savestarts = savestarts))
     
 }

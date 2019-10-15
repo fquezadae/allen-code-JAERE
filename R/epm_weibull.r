@@ -4,45 +4,45 @@ epm_weibull <- function(starts3, dat, otherdat, alts) {
     #' Expected profit model weibull catch function
     #'
     #' @param starts3 Starting values as a vector (num). For this likelihood,
-	#'     the order takes: c([catch-function parameters], [travel-distance
-	#'     parameters], [catch sigma(s)], [scale parameter]). \cr \cr
+    #'     the order takes: c([catch-function parameters], [travel-distance
+    #'     parameters], [catch sigma(s)], [scale parameter]). \cr \cr
     #'     The catch-function and travel-distance parameters are of length (# of
-	#'     catch-function variables)*(k) and (# of travel-distance variables)
-	#'     respectively, where (k) equals the number of alternatives. The catch
-	#'     sigma(s) are either of length equal to unity or length (k) if the
-	#'     analyst is estimating location-specific catch sigma parameters. The
-	#'     scale parameter is of length equal to unity.
+    #'     catch-function variables)*(k) and (# of travel-distance variables)
+    #'     respectively, where (k) equals the number of alternatives. The catch
+    #'     sigma(s) are either of length equal to unity or length (k) if the
+    #'     analyst is estimating location-specific catch sigma parameters. The
+    #'     scale parameter is of length equal to unity.
     #' @param dat Data matrix, see output from shift_sort_x, alternatives with
-	#'     distance.
+    #'     distance.
     #' @param otherdat Other data used in model (as a list containing objects
-	#'     `intdat`, `griddat`, and `prices`). \cr \cr
-	#'     For this likelihood, `intdat` are "travel-distance variables", which
+    #'     `intdat`, `griddat`, and `prices`). \cr \cr
+    #'     For this likelihood, `intdat` are "travel-distance variables", which
     #'     are alternative-invariant variables that are interacted with travel
     #'     distance to form the cost portion of the likelihood. Each variable
     #'     name therefore corresponds to data with dimensions (number of
     #'     observations) by (unity), and returns a single parameter. \cr \cr
     #'     In `griddat` are "catch-function variables" that are
-	#'     alternative-invariant variables that are interacted with zonal
-	#'     constants to form the catch portion of the likelihood. Each variable
-	#'     name therefore corresponds to data with dimensions (number of
-	#'     observations) by (unity), and returns (k) parameters where (k) equals
-	#'     the number of alternatives. \cr \cr
-	#'     For "catch-function variables" `griddat` and "travel-distance
-	#'     variables" `intdat`, any number of variables are allowed, as a list
-	#'     of matrices. Note the variables (each as a matrix) within `griddat`
-	#'     `intdat` have no naming restrictions. "Catch-function variables" may
-	#'     correspond to variables that impact catches by location, or
-	#'     interaction variables may be vessel characteristics that affect how
-	#'     much disutility is suffered by traveling a greater distance. Note in
-	#'     this likelihood the "catch-function variables" vary across
-	#'     observations but not for each location: they are allowed to impact
-	#'     catches differently across alternatives due to the location-specific
-	#'     coefficients. If there are no other data, the user can set `griddat`
-	#'     as ones with dimension (number of observations) x (number of
-	#'     alternatives) and `intdat` variables as ones with dimension (number
-	#'     of observations) by (unity). \cr \cr
-	#'     The variable `prices` is a matrix of dimension (number of
-	#'     observations) by (unity), corresponding to prices.
+    #'     alternative-invariant variables that are interacted with zonal
+    #'     constants to form the catch portion of the likelihood. Each variable
+    #'     name therefore corresponds to data with dimensions (number of
+    #'     observations) by (unity), and returns (k) parameters where (k) equals
+    #'     the number of alternatives. \cr \cr
+    #'     For "catch-function variables" `griddat` and "travel-distance
+    #'     variables" `intdat`, any number of variables are allowed, as a list
+    #'     of matrices. Note the variables (each as a matrix) within `griddat`
+    #'     `intdat` have no naming restrictions. "Catch-function variables" may
+    #'     correspond to variables that impact catches by location, or
+    #'     interaction variables may be vessel characteristics that affect how
+    #'     much disutility is suffered by traveling a greater distance. Note in
+    #'     this likelihood the "catch-function variables" vary across
+    #'     observations but not for each location: they are allowed to impact
+    #'     catches differently across alternatives due to the location-specific
+    #'     coefficients. If there are no other data, the user can set `griddat`
+    #'     as ones with dimension (number of observations) x (number of
+    #'     alternatives) and `intdat` variables as ones with dimension (number
+    #'     of observations) by (unity). \cr \cr
+    #'     The variable `prices` is a matrix of dimension (number of
+    #'     observations) by (unity), corresponding to prices.
     #' @param alts Number of alternative choices in model as length equal to
     #'     unity (as a numeric vector).
     #' @return ld: negative log likelihood
@@ -67,25 +67,25 @@ epm_weibull <- function(starts3, dat, otherdat, alts) {
     #'
     #' otherdat <- list(griddat=list(si=as.matrix(si),si2=as.matrix(si2)),
     #'     intdat=list(zi=as.matrix(zi),zi2=as.matrix(zi2)),
-	#'     pricedat=list(prices=as.matrix(prices)))
+    #'     pricedat=list(prices=as.matrix(prices)))
     #'
     #' initparams <- c(2.5, 2.0, 1.5, 1.0, 1.1, 1.05, 0.9, 0.8, -0.8, -0.4, 3,
-	#'     2, 3.5, 2.5, 1)
+    #'     2, 3.5, 2.5, 1)
     #'
     #' func <- epm_weibull
     #'
     #' results <- discretefish_subroutine(catch,choice,distance,otherdat,
-	#'     initparams,optimOpt,func,methodname)
+    #'     initparams,optimOpt,func,methodname)
     #'
     
     obsnum <- dim(griddat)[1]
 
-	griddat <- as.matrix(do.call(cbind, otherdat$griddat))
+    griddat <- as.matrix(do.call(cbind, otherdat$griddat))
     gridnum <- dim(griddat)[2]
-	griddat <- matrix(apply(griddat, 2, function(x) rep(x,times=alts)), obsnum,
-	    gridnum*alts)
+    griddat <- matrix(apply(griddat, 2, function(x) rep(x,times=alts)), obsnum,
+        gridnum*alts)
     intdat <- as.matrix(do.call(cbind, otherdat$intdat))
-	intnum <- dim(intdat)[2]
+    intnum <- dim(intdat)[2]
     
     pricedat <- as.matrix(unlist(otherdat$pricedat))
     
@@ -93,22 +93,22 @@ epm_weibull <- function(starts3, dat, otherdat, alts) {
     gridcoef <- as.matrix(starts3[1:(gridnum * alts), ])
     
     intcoef <- as.matrix(starts3[(((gridnum * alts) + intnum) - intnum + 1):
-	    ((gridnum * alts) + intnum), ])
+        ((gridnum * alts) + intnum), ])
     
     if ((dim(starts3)[1] - ((gridnum * alts) + intnum + 1)) == alts) {
-	
+    
         k <- as.matrix(starts3[((gridnum * alts) + intnum + 1):
-		    ((gridnum * alts) + intnum + alts), ])
+            ((gridnum * alts) + intnum + alts), ])
         signum <- alts
-	
+    
     } else {
-	
+    
         k <- as.matrix(starts3[((gridnum * alts) + intnum + 1), ])
         signum <- 1
-	
+    
     }
     # if number of parameters before scale parameter is not equal to number of
-	    # alts, use first parameter as sigma catch
+        # alts, use first parameter as sigma catch
     
     k <- sqrt(k^2)
     
@@ -116,7 +116,7 @@ epm_weibull <- function(starts3, dat, otherdat, alts) {
     # end of vector
     
     gridbetas <- (matrix(gridcoef, obsnum, alts * gridnum, byrow = TRUE) *
-	    griddat)
+        griddat)
     dim(gridbetas) <- c(nrow(gridbetas), alts, gridnum)
     gridbetas <- rowSums(gridbetas, dim = 2)
     
@@ -131,7 +131,7 @@ epm_weibull <- function(starts3, dat, otherdat, alts) {
         obsnum, (alts + 1))
     
     djztemp <- betas[1:obsnum, rep(1:ncol(betas), each = alts)] *
-	    dat[, 3:(dim(dat)[2])]
+        dat[, 3:(dim(dat)[2])]
     dim(djztemp) <- c(nrow(djztemp), ncol(djztemp)/(alts + 1), alts + 1)
     
     prof <- rowSums(djztemp, dim = 2)
@@ -157,14 +157,14 @@ epm_weibull <- function(starts3, dat, otherdat, alts) {
     dim(empgriddat) <- c(nrow(empgriddat), alts, gridnum)
     
     empgridmu <- .rowSums(empgridbetas[, cj, ] * empgriddat[, 1, ], obsnum,
-	    gridnum)
+        gridnum)
     # note grid data same across all alternatives
     
     empgridmu <- sqrt(empgridmu^2)
     
     ldcatch <- (matrix((log(empk)), obsnum)) + (matrix((-(empk)), obsnum) *
-	    log(empgridmu)) + (matrix((empk - 1), obsnum) * log(yj)) +
-		(-((yj/empgridmu)^(matrix(empk, obsnum))))
+        log(empgridmu)) + (matrix((empk - 1), obsnum) * log(yj)) +
+        (-((yj/empgridmu)^(matrix(empk, obsnum))))
     
     ld1 <- ldcatch + ldchoice
     

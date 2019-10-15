@@ -55,10 +55,10 @@ Conditional logit likelihood
 \section{Graphical examples}{
  
 \if{html}{
-\figure{logit_c_grid.png}{options: width="50\%" 
+\figure{logit_c_grid.png}{options: width="40\%" 
 alt="Figure: logit_c_grid.png"}
 \cr
-\figure{logit_c_travel.png}{options: width="50\%" 
+\figure{logit_c_travel.png}{options: width="40\%" 
 alt="Figure: logit_c_travel.png"}
 }
 }

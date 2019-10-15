@@ -2,7 +2,7 @@ shift_sort_x <- function(x, ch, y, distance, alts, ab) {
     #' shift_sort_x
     #'
     #' Shifts choices so that the chosen zone will be automatically the first
-	#'     one
+    #'     one
     #'
     #' @param x Matrix of choice possibilites from create_logit_input
     #' @param ch Data corresponding to actual zonal choice
@@ -19,7 +19,7 @@ shift_sort_x <- function(x, ch, y, distance, alts, ab) {
     n <- max(dim(ch))
     d <- list()
     x <- as.matrix(cbind(x, distance))
-	# starts as data.frame
+    # starts as data.frame
     ch <- as.matrix(ch)
     y <- as.matrix(y)
     
@@ -27,14 +27,14 @@ shift_sort_x <- function(x, ch, y, distance, alts, ab) {
         if (ch0[j, ] == 0) {
             
             xsorted <- t(as.matrix(x[j, ]))
-			# need to 'as.matrix' again because subsetting turns into named num
-			    # (one dim). Is there a not stupid way to do this?
+            # need to 'as.matrix' again because subsetting turns into named num
+                # (one dim). Is there a not stupid way to do this?
             
         } else {
             
             xj <- as.matrix(x[j, ])
-			#need to 'as.matrix' again because subsetting turns into named num
-			    #(one dim). Is there a not stupid way to do this?
+            #need to 'as.matrix' again because subsetting turns into named num
+                #(one dim). Is there a not stupid way to do this?
             xj <- (matrix(xj, alts, ab))
             xj <- t(xj)
             

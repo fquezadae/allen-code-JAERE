@@ -69,10 +69,10 @@ logit_c <- function(starts3, dat, otherdat, alts) {
     #'
     #' @section Graphical examples: 
     #' \if{html}{
-    #' \figure{logit_c_grid.png}{options: width="50\%" 
+    #' \figure{logit_c_grid.png}{options: width="40\%" 
     #' alt="Figure: logit_c_grid.png"}
     #' \cr
-    #' \figure{logit_c_travel.png}{options: width="50\%" 
+    #' \figure{logit_c_travel.png}{options: width="40\%" 
     #' alt="Figure: logit_c_travel.png"}
     #' }
     #'
@@ -89,11 +89,11 @@ logit_c <- function(starts3, dat, otherdat, alts) {
     starts3 <- as.matrix(starts3)
     gridcoef <- as.matrix(starts3[1:gridnum, ])
     intcoef <- as.matrix(starts3[((gridnum + intnum) - intnum + 1):
-	    (gridnum + intnum), ])
+        (gridnum + intnum), ])
     # split parameters for grid and interactions
     
     gridbetas <- (matrix(rep(gridcoef, each = alts), obsnum, alts * gridnum,
-	    byrow = TRUE) * griddat)
+        byrow = TRUE) * griddat)
     dim(gridbetas) <- c(nrow(gridbetas), alts, gridnum)
     gridbetas <- rowSums(gridbetas, dim = 2)
     
@@ -103,7 +103,7 @@ logit_c <- function(starts3, dat, otherdat, alts) {
     betas <- matrix(c(gridbetas, intbetas), obsnum, (alts + 1))
     
     djztemp <- betas[1:obsnum, rep(1:ncol(betas), each = alts)] *
-	    dat[, 3:(dim(dat)[2])]
+        dat[, 3:(dim(dat)[2])]
     dim(djztemp) <- c(nrow(djztemp), ncol(djztemp)/(alts + 1), alts + 1)
     
     prof <- rowSums(djztemp, dim = 2)

@@ -10,7 +10,7 @@ create_logit_input <- function(choice) {
     #'
     
     dataCompile <- matrix(rep(diag(max(choice)), each = dim(choice)[1]),
-	    nrow = dim(choice)[1])
+        nrow = dim(choice)[1])
     
     return(dataCompile)
     
