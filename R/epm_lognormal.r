@@ -77,6 +77,18 @@ epm_lognormal <- function(starts3, dat, otherdat, alts) {
     #' results <- discretefish_subroutine(catch,choice,distance,otherdat,
     #'     initparams,optimOpt,func,methodname)
     #'
+    #' @section Graphical examples: 
+    #' \if{html}{
+    #' \figure{epm_lognormal_grid.png}{options: width="40\%" 
+    #' alt="Figure: epm_lognormal_grid.png"}
+    #' \cr
+    #' \figure{epm_lognormal_travel.png}{options: width="40\%" 
+    #' alt="Figure: epm_lognormal_travel.png"}
+    #' \cr
+    #' \figure{epm_lognormal_sigma.png}{options: width="40\%" 
+    #' alt="Figure: epm_lognormal_sigma.png"}
+    #' }
+    #'
     
     obsnum <- dim(griddat)[1]
 

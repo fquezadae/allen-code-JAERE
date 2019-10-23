@@ -77,7 +77,19 @@ epm_weibull <- function(starts3, dat, otherdat, alts) {
     #' results <- discretefish_subroutine(catch,choice,distance,otherdat,
     #'     initparams,optimOpt,func,methodname)
     #'
-    
+    #' @section Graphical examples: 
+    #' \if{html}{
+    #' \figure{epm_weibull_grid.png}{options: width="40\%" 
+    #' alt="Figure: epm_weibull_grid.png"}
+    #' \cr
+    #' \figure{epm_weibull_travel.png}{options: width="40\%" 
+    #' alt="Figure: epm_weibull_travel.png"}
+    #' \cr
+    #' \figure{epm_weibull_sigma.png}{options: width="40\%" 
+    #' alt="Figure: epm_weibull_sigma.png"}
+    #' }
+    #'
+        
     obsnum <- dim(griddat)[1]
 
     griddat <- as.matrix(do.call(cbind, otherdat$griddat))

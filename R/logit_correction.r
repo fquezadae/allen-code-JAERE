@@ -85,7 +85,19 @@ logit_correction <- function(starts3, dat, otherdat, alts) {
     #' results <- discretefish_subroutine(catch,choice,distance,otherdat,
     #'     initparams,optimOpt,func,methodname)
     #'
-    
+    #' @section Graphical examples: 
+    #' \if{html}{
+    #' \figure{logit_correction_grid.png}{options: width="40\%" 
+    #' alt="Figure: logit_correction_grid.png"}
+    #' \cr
+    #' \figure{logit_correction_travel.png}{options: width="40\%" 
+    #' alt="Figure: logit_correction_travel.png"}
+    #' \cr
+    #' \figure{logit_correction_poly.png}{options: width="40\%" 
+    #' alt="Figure: logit_correction_poly.png"}
+    #' }
+    #'
+        
     obsnum <- dim(griddat)[1]
 
     griddat <- as.matrix(do.call(cbind, otherdat$griddat))

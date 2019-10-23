@@ -54,6 +54,17 @@ ld: negative log likelihood
 \description{
 Average catch multinomial logit procedure
 }
+\section{Graphical examples}{
+ 
+\if{html}{
+\figure{logit_avgcat_grid.png}{options: width="40\%" 
+alt="Figure: logit_avgcat_grid.png"}
+\cr
+\figure{logit_avgcat_travel.png}{options: width="40\%" 
+alt="Figure: logit_avgcat_travel.png"}
+}
+}
+
 \examples{
 data(zi)
 data(catch)

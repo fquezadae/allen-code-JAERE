@@ -59,6 +59,20 @@ ld: negative log likelihood
 \description{
 Expected profit model lognormal catch function
 }
+\section{Graphical examples}{
+ 
+\if{html}{
+\figure{epm_lognormal_grid.png}{options: width="40\%" 
+alt="Figure: epm_lognormal_grid.png"}
+\cr
+\figure{epm_lognormal_travel.png}{options: width="40\%" 
+alt="Figure: epm_lognormal_travel.png"}
+\cr
+\figure{epm_lognormal_sigma.png}{options: width="40\%" 
+alt="Figure: epm_lognormal_sigma.png"}
+}
+}
+
 \examples{
 data(zi)
 data(catch)

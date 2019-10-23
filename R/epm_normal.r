@@ -74,7 +74,19 @@ epm_normal <- function(starts3, dat, otherdat, alts) {
     #' results <- discretefish_subroutine(catch,choice,distance,otherdat,
     #'     initparams,optimOpt,func,methodname)
     #'
-    
+    #' @section Graphical examples: 
+    #' \if{html}{
+    #' \figure{epm_normal_grid.png}{options: width="40\%" 
+    #' alt="Figure: epm_normal_grid.png"}
+    #' \cr
+    #' \figure{epm_normal_travel.png}{options: width="40\%" 
+    #' alt="Figure: epm_normal_travel.png"}
+    #' \cr
+    #' \figure{epm_normal_sigma.png}{options: width="40\%" 
+    #' alt="Figure: epm_normal_sigma.png"}
+    #' }
+    #'
+        
     obsnum <- dim(griddat)[1]
 
     griddat <- as.matrix(do.call(cbind, otherdat$griddat))
