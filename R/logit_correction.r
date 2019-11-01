@@ -98,14 +98,16 @@ logit_correction <- function(starts3, dat, otherdat, alts) {
     #' }
     #'
         
+    gridnum <- dim(otherdat$griddat)[2]
+    
+    griddat <- as.matrix(do.call(cbind, otherdat$griddat))
     obsnum <- dim(griddat)[1]
 
-    griddat <- as.matrix(do.call(cbind, otherdat$griddat))
-    gridnum <- dim(griddat)[2]
     griddat <- matrix(apply(griddat, 2, function(x) rep(x,times=alts)), obsnum,
         gridnum*alts)
+        
+    intnum <- dim(otherdat$intdat)[2]
     intdat <- as.matrix(do.call(cbind, otherdat$intdat))
-    intnum <- dim(intdat)[2]
     
     startloc <- (otherdat$startloc)
     distance <- otherdat$distance
