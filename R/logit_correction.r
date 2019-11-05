@@ -97,19 +97,15 @@ logit_correction <- function(starts3, dat, otherdat, alts) {
     #' alt="Figure: logit_correction_poly.png"}
     #' }
     #'
-        
-    gridnum <- dim(otherdat$griddat)[2]
     
     griddat <- as.matrix(do.call(cbind, otherdat$griddat))
-    obsnum <- dim(griddat)[1]
-
-    griddat <- matrix(apply(griddat, 2, function(x) rep(x,times=alts)), obsnum,
-        gridnum*alts)
-        
-    intnum <- dim(otherdat$intdat)[2]
     intdat <- as.matrix(do.call(cbind, otherdat$intdat))
+    gridnum <- dim(griddat)[2]/alts
+    intnum <- dim(intdat)[2]
+
+    obsnum <- dim(griddat)[1]
     
-    startloc <- (otherdat$startloc)
+    startloc <- otherdat$startloc
     distance <- otherdat$distance
     
     polyn <- otherdat$polyn

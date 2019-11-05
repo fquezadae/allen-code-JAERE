@@ -99,14 +99,12 @@ logit_correction_estscale <- function(starts3, dat, otherdat, alts) {
     #'     initparams,optimOpt,func,methodname)
     #'
     
-    obsnum <- dim(griddat)[1]
-
     griddat <- as.matrix(do.call(cbind, otherdat$griddat))
-    gridnum <- dim(griddat)[2]
-    griddat <- matrix(apply(griddat, 2, function(x) rep(x,times=alts)), obsnum,
-        gridnum*alts)
     intdat <- as.matrix(do.call(cbind, otherdat$intdat))
+    gridnum <- dim(griddat)[2]/alts
     intnum <- dim(intdat)[2]
+
+    obsnum <- dim(griddat)[1]
     
     startloc <- (otherdat$startloc)
     distance <- otherdat$distance
