@@ -128,6 +128,8 @@ logit_correction <- function(starts3, dat, otherdat, alts) {
     sigmaa <- as.matrix(starts3[((1 + 1 + gridlength + intnum - 1) + 1), ])
     # end of vector
     
+    sigmaa <- sqrt(sigmaa^2)
+    
     gridbetas <- (matrix(gridcoef[1:(alts * gridnum), ], obsnum, alts * gridnum,
         byrow = TRUE) * griddat)
     dim(gridbetas) <- c(nrow(gridbetas), alts, gridnum)
