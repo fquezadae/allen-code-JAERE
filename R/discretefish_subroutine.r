@@ -81,18 +81,20 @@ discretefish_subroutine <- function(catch, choice, distance, otherdat,
         optim_message = res[["message"]])
     H <- res[["hessian"]]
     
+    LL <- -LL
+    
     # Model comparison metrics (MCM)
     param <- max(dim(as.matrix(starts2)))
     obs <- dim(dataCompile)[1]
-    AIC <- 2 * param - 2 * LL
+    AIC <- (2 * param) - (2 * LL)
     
-    AICc <- AIC + (2 * param * (param + 1))/(obs - param - 1)
+    AICc <- AIC + ((2 * param * (param + 1))/(obs - param - 1))
     
-    BIC <- -2 * LL + param * log(obs)
+    BIC <- (-2 * LL) + (param * log(obs))
     
-    PseudoR2 <- (LL_start - LL)/LL_start
+    PseudoR2 <- ((-LL_start) - LL)/(-LL_start)
     
-    MCM <- list(AIC = AIC, AICc = AICc, BIC = BIC, PseudoR2 = PseudoR2)
+    MCM <- list(AIC = AIC, AICc = AICc, BIC = BIC, PseudoR2 = PseudoR2, LL = LL)
     
     if (is.null(H) == FALSE) {
     

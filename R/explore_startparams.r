@@ -1,5 +1,5 @@
 explore_startparams <- function(space, startsr, dev, func, catch, choice,
-    distance, otherdat) {
+    distance, otherdat, changevec) {
     #' Function to explore starting value parameter space
     #'
     #' Shotgun method to find better starting values by exploring starting value
@@ -22,6 +22,7 @@ explore_startparams <- function(space, startsr, dev, func, catch, choice,
     #' @param distance Data corresponding to distance.
     #' @param otherdat Other data (as a list, corresponding to the likelihood
     #'     function you want to test.)
+    #' @param changevec Which params to change (equals 1).
     #' @return
     #' newstart: Chosen starting values with smallest likelihood \cr
     #' saveLLstarts: Likelihood values for each starting value permutation \cr
@@ -80,7 +81,10 @@ explore_startparams <- function(space, startsr, dev, func, catch, choice,
     
     for (i in 2:space) {
         
-        savestarts[[i]] <- rnorm(length(startsr), startsr, dev)
+        set.seed(i)
+        savestarts[[i]] <- rnorm(length(startsr), startsr, dev)*changevec +
+            startsr*(1 - changevec)
+
         saveLLstarts[[i]] <- fr(savestarts[[i]], d, otherdat, max(choice))
         
     }

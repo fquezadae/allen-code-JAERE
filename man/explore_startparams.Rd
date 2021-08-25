@@ -12,7 +12,8 @@ explore_startparams(
   catch,
   choice,
   distance,
-  otherdat
+  otherdat,
+  changevec
 )
 }
 \arguments{
@@ -40,6 +41,8 @@ parameters are, the greater the dev parameter should be.}
 
 \item{otherdat}{Other data (as a list, corresponding to the likelihood
 function you want to test.)}
+
+\item{changevec}{Which params to change (equals 1).}
 }
 \value{
 newstart: Chosen starting values with smallest likelihood \cr

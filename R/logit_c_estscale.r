@@ -1,4 +1,4 @@
-logit_c <- function(starts3, dat, otherdat, alts) {
+logit_c_estscale <- function(starts3, dat, otherdat, alts) {
     #' Conditional logit likelihood
     #'
     #' Conditional logit likelihood
@@ -88,9 +88,11 @@ logit_c <- function(starts3, dat, otherdat, alts) {
     
     starts3 <- as.matrix(starts3)
     gridcoef <- as.matrix(starts3[1:gridnum, ])
-    intcoef <- as.matrix(starts3[((gridnum + intnum) - intnum + 1):
+    sigmac <- as.matrix(starts3[((gridnum + intnum) - intnum + 1):
         (gridnum + intnum), ])
     # split parameters for grid and interactions
+    
+    intcoef <- -1
     
     gridbetas <- (matrix(rep(gridcoef, each = alts), obsnum, alts * gridnum,
         byrow = TRUE) * griddat)
@@ -109,7 +111,7 @@ logit_c <- function(starts3, dat, otherdat, alts) {
     prof <- rowSums(djztemp, dim = 2)
     profx <- prof - prof[, 1]
     
-    exb <- exp(profx)
+    exb <- exp(profx/matrix(sigmac, dim(prof)[1], dim(prof)[2]))
     
     ldchoice <- (-log(rowSums(exb)))
     

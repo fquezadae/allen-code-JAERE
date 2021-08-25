@@ -1,4 +1,4 @@
-logit_correction <- function(starts3, dat, otherdat, alts) {
+logit_correction_polyint_estscale <- function(starts3, dat, otherdat, alts) {
     #' Full information model with Dahl's correction function
     #'
     #' Full information model with Dahl's correction function
@@ -97,50 +97,91 @@ logit_correction <- function(starts3, dat, otherdat, alts) {
     #' alt="Figure: logit_correction_poly.png"}
     #' }
     #'
-    
+
     griddat <- as.matrix(do.call(cbind, otherdat$griddat))
     intdat <- as.matrix(do.call(cbind, otherdat$intdat))
     gridnum <- dim(griddat)[2]/alts
     intnum <- dim(intdat)[2]
 
+    if (any(is.na(otherdat$noCgriddat)) == TRUE) {
+    noCgridnum <- 0
+    } else {
+    noCgriddat <- as.matrix(do.call(cbind, otherdat$noCgriddat))
+    noCgridnum <- dim(noCgriddat)[2]/alts
+    }
+    
     obsnum <- dim(griddat)[1]
     
     startloc <- otherdat$startloc
     distance <- otherdat$distance
+    singlecor <- otherdat$singlecor
     
     polyn <- otherdat$polyn
+    intpoly <- otherdat$polyintnum
+    regconstant <- otherdat$regconstant
+    polyconstant <- otherdat$polyconstant
+    bw <- otherdat$bw
     
     starts3 <- as.matrix(starts3)
     
     revcoef <- as.matrix(starts3[1:1, ])
-    
-    gridlength <- (gridnum * alts) + ((((polyn + 1) * 2) + 2) * alts)
+
+    gridlength <- (gridnum * alts) + 
+        ((((polyn + polyconstant) * (1+(1-singlecor))) + 
+        intpoly) * alts)
+        
+    noCgridlength <- (noCgridnum)
     
     gridcoef <- as.matrix(starts3[2:(1 + gridlength), ])
     
-    signum <- 1
+    if (any(is.na(otherdat$noCgriddat)) == TRUE) {
+    noCgridcoef <- 0
+    } else {
+    noCgridcoef <- as.matrix(starts3[(1 + 1 + gridlength):
+        (1 + gridlength + noCgridlength), ])
+    }
     
-    intcoef <- as.numeric(starts3[(1 + 1 + gridlength):((1 + 1 + gridlength) +
-        intnum - 1), ])
+    # signum <- 1
     
-    sigmac <- (1)
+    intcoef <- -1
     
-    sigmaa <- as.matrix(starts3[((1 + 1 + gridlength + intnum - 1) + 1), ])
+    sigmac <- as.numeric(starts3[(1 + 1 + gridlength + noCgridlength):
+        ((1 + 1 + gridlength + noCgridlength) + intnum - 1), ])
+    
+    sigmac <- sqrt(sigmac^2)
+
     # end of vector
+    sigmaa <- as.matrix(starts3[((1 + 1 + gridlength + noCgridlength + 
+        intnum - 1) + 1), ])
     
     sigmaa <- sqrt(sigmaa^2)
     
-    gridbetas <- (matrix(gridcoef[1:(alts * gridnum), ], obsnum, alts * gridnum,
-        byrow = TRUE) * griddat)
-    dim(gridbetas) <- c(nrow(gridbetas), alts, gridnum)
+    gridbetas <- (matrix(gridcoef[1:(alts * (gridnum)), ], obsnum, 
+        (alts * (gridnum)),
+        byrow = TRUE) * cbind(griddat))
+    dim(gridbetas) <- c(nrow(gridbetas), alts, (gridnum))
     gridbetas <- rowSums(gridbetas, dim = 2)
+    
+    if (any(is.na(otherdat$noCgriddat)) == TRUE) {
+    noCgridbetas <- 0
+    } else {
+    noCgridbetas <- (matrix(rep(noCgridcoef, each = alts), obsnum, 
+        alts * noCgridnum, byrow = TRUE) * noCgriddat)
+    dim(noCgridbetas) <- c(nrow(noCgridbetas), alts, noCgridnum)
+    noCgridbetas <- rowSums(noCgridbetas, dim = 2)
+    }
     
     intbetas <- .rowSums(intdat * matrix(intcoef, obsnum, intnum, byrow = TRUE), 
         obsnum, intnum)
-    
+        
+    if (any(is.na(otherdat$noCgriddat)) == TRUE) {
     betas <- matrix(c((gridbetas * matrix(revcoef, obsnum, alts)), intbetas),
         obsnum, (alts + 1))
-    
+    } else {
+    betas <- matrix(c((gridbetas * matrix(revcoef, obsnum, alts)), intbetas),
+        obsnum, (alts + 1)) + cbind(noCgridbetas, rep(0, obsnum))
+    }
+
     djztemp <- betas[1:obsnum, rep(1:ncol(betas), each = alts)] *
         dat[, 3:(dim(dat)[2])]
     dim(djztemp) <- c(nrow(djztemp), ncol(djztemp)/(alts + 1), alts + 1)
@@ -151,8 +192,13 @@ logit_correction <- function(starts3, dat, otherdat, alts) {
     exb <- exp(profx/matrix(sigmac, dim(prof)[1], dim(prof)[2]))
     
     ldchoice <- (-log(rowSums(exb)))
+
+    if (any(is.na(otherdat$noCgriddat)) == TRUE) {
+    revside <- (gridbetas * matrix(revcoef, obsnum, alts))
+    } else {
+    revside <- (gridbetas * matrix(revcoef, obsnum, alts)) + noCgridbetas
+    }
     
-    revside <- gridbetas * matrix(revcoef, obsnum, alts)
     costside <- distance * intbetas
     
     probprof <- revside + costside
@@ -172,24 +218,64 @@ logit_correction <- function(starts3, dat, otherdat, alts) {
     probstay <- probs * locstay
     probmove <- probs * locmove
     
-    intpoly <- 2
-    
-    movemat <- matrix(c(locmove, (matrix(probmove, obsnum, alts * polyn)^
-        matrix(rep(1:polyn, each = alts), obsnum, alts * polyn, byrow = TRUE)),
-        (matrix(probmove, obsnum, alts * intpoly) * matrix(rowSums(probstay),
-        obsnum, alts * intpoly))^matrix(rep(1:intpoly, each = alts), obsnum,
-        alts * intpoly, byrow = TRUE)), obsnum, alts * (polyn + 1 + intpoly)) *
-        matrix(!(startloc == cj), obsnum, alts * (polyn + 1 + intpoly))
-    # 1 is for constant
-    
-    staymat <- matrix(c(locstay, (matrix(probstay, obsnum, alts * polyn)^
-        matrix(rep(1:polyn, each = alts), obsnum, alts * polyn, byrow = TRUE))),
-        obsnum, alts * (polyn + 1)) * matrix((startloc == cj), obsnum,
-        alts * (polyn + 1))
-    # 1 is for constant
-    
+    probmovesave <<- rowSums(probmove)
+    sx <- 1-exp(-probmovesave/(bw-probmovesave))
+    sx[sx<0] <- 1
+
+    if (polyconstant == 1) {
+        suppressWarnings(movemat <- matrix(c(locmove, (matrix(probmove, obsnum, 
+            alts * polyn)^matrix(rep(1:polyn, each = alts), obsnum, 
+            alts * polyn, byrow = TRUE)), (matrix(probmove, obsnum, 
+            alts * intpoly) * matrix(rowSums(probstay), obsnum, 
+            alts * intpoly))^matrix(rep(1:intpoly, each = alts), 
+            obsnum, alts * intpoly, byrow = TRUE)), obsnum, alts * 
+            (polyn + 1 + intpoly)) * matrix(!(startloc == cj), 
+            obsnum, alts * (polyn + 1 + intpoly))
+            )
+        staymat <- matrix(c(locstay, (matrix(probstay, obsnum, 
+            alts * polyn)^matrix(rep(1:polyn, each = alts), obsnum, 
+            alts * polyn, byrow = TRUE))), obsnum, alts * (polyn + 
+            1)) * matrix((startloc == cj), obsnum, alts * (polyn + 
+            1))
+    } else if (polyconstant == 0) {
+        suppressWarnings(movemat <- matrix(c((matrix(probmove, obsnum, alts * 
+            polyn)^matrix(rep(1:polyn, each = alts), obsnum, 
+            alts * polyn, byrow = TRUE)), (matrix(probmove, obsnum, 
+            alts * intpoly) * matrix(rowSums(probstay), obsnum, 
+            alts * intpoly))^matrix(rep(1:intpoly, each = alts), 
+            obsnum, alts * intpoly, byrow = TRUE)), obsnum, alts * 
+            (polyn + intpoly)) * matrix(!(startloc == cj), obsnum, 
+            alts * (polyn + intpoly))
+            )
+        staymat <- matrix(c((matrix(probstay, obsnum, alts * 
+            polyn)^matrix(rep(1:polyn, each = alts), obsnum, 
+            alts * polyn, byrow = TRUE))), obsnum, alts * (polyn)) * 
+            matrix((startloc == cj), obsnum, alts * (polyn))
+    }
+
+    if (singlecor == 1) {
+    Xvar <- matrix(c(griddat * matrix(locmove, obsnum, gridnum * alts), 
+        (cbind(staymat, 
+        matrix(0, dim(staymat)[1], dim(movemat)[2]-dim(staymat)[2]))
+        + movemat)), obsnum, dim(gridcoef)[1])
+    } else {
     Xvar <- matrix(c(griddat * matrix(locmove, obsnum, gridnum * alts), staymat, 
         movemat), obsnum, dim(gridcoef)[1])
+    }
+
+    if (bw == -1) {
+    Xvar[,1:alts] <- Xvar[,1:alts]
+    Xvar[,((alts*gridnum)+1):dim(Xvar)[2]] <- Xvar[,((alts*gridnum)+1):
+        dim(Xvar)[2]]
+    } else if (regconstant == 0) {
+        Xvar[,1:alts] <- (Xvar[,1:alts])
+    Xvar[,((alts*gridnum)+1):dim(Xvar)[2]] <- Xvar[,((alts*gridnum)+1):
+        dim(Xvar)[2]]*(1-sx)
+    } else {
+    Xvar[,1:alts] <- (Xvar[,1:alts]*sx)
+    Xvar[,((alts*gridnum)+1):dim(Xvar)[2]] <- Xvar[,((alts*gridnum)+1):
+        dim(Xvar)[2]]*(1-sx)  
+    }
     
     empcatches <- Xvar %*% gridcoef
     
