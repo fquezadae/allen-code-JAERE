@@ -2,7 +2,8 @@ Barebones FishSET
 =========
 ---
 
-If you run into problems you can contact allen.chen@noaa.gov
+This is a barebones version of the FishSET package, primarily used for directly 
+calling some of the lower-level functions.
 
 # Installation #
 ---

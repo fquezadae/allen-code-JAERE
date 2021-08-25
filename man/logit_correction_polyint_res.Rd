@@ -64,7 +64,7 @@ unity (as a numeric vector).}
 ld: negative log likelihood
 }
 \description{
-Full information model with Dahl's correction function
+This returns the different components of the likelihood (for results)
 }
 \section{Graphical examples}{
  
