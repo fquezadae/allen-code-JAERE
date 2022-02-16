@@ -22,8 +22,7 @@
 #' @importFrom rgeos gDistance
 #' @importFrom grDevices chull
 #' @importFrom raster projection
-#' @details  Function is called by the \code{\link{create_alternative_choice}}
-#'     function to assign each observation to zones defined by a spatial data
+#' @details  Assign each observation to zones defined by a spatial data
 #'     set.
 #' Converts point data from gridfile into polygons and then finds which polygon
 #'     each observation in the main data frame is within. Use hull.polygon=T
