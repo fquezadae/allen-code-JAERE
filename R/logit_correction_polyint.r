@@ -216,7 +216,7 @@ logit_correction_polyint <- function(starts3, dat, otherdat, alts) {
     probstay <- probs * locstay
     probmove <- probs * locmove
     
-    probmovesave <- rowSums(probmove)
+    probmovesave <<- rowSums(probmove)
     sx <- 1-exp(-probmovesave/(bw-probmovesave))
     sx[sx<0] <- 1
 

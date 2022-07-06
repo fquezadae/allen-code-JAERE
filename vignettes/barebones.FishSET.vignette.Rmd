@@ -23,7 +23,7 @@ allen.chen@noaa.gov.
 `otherdat` they need to run their chosen likelihood.
 - Currently ships with a conditional logit function `logit_c`, an average catch
 logit function `logit_avgcat`, a full information likelihood with correction
-function `logit_correction`, an expected profit model with a normally
+function `logit_correction_polyint`, an expected profit model with a normally
 distributed catch function `epm_normal`, an expected profit model with a
 log-normally distributed catch function `epm_lognormal`, and an expected profit
 model with a weibull distributed catch function `epm_weibull`.
