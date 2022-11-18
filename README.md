@@ -102,7 +102,7 @@ saveRDS(par_res_base, paste0(dirout, "MC_", cdev, ".rds"))
 ```
 
 The code to reproduce the simulation figures is included as a script. These 
-produce figures 1 through 3. Please see MC_make_figs.r in the R folder.
+produce figures 1 through 3. Please see MC_make_figs.r in the exec folder.
 The code to run the empirical example is also included as a script, however, 
 the confidential data used to run the empirical example is not included. Please 
-see Emp_ex.r in the R folder.
+see Emp_ex.r in the exec folder.
