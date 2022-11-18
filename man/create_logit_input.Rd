@@ -15,6 +15,3 @@ dataCompile: a data matrix
 \description{
 Creates a data matrix that is consistent with the built in model forms
 }
-\examples{
-
-}

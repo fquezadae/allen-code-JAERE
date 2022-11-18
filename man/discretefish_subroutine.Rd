@@ -44,6 +44,3 @@ H1: inverse hessian \cr
 \description{
 Subroutine to run chosen discrete choice model
 }
-\examples{
-
-}

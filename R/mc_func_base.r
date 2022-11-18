@@ -48,15 +48,18 @@ for (l in 1:kk) {
 }
 
 # make catch deviation
-bik <- list()	
+bik <- list()
+bikN <- list()	
 for (l in 1:kk) { 
 
     biksigma <- c(cdev,cdev,cdev,cdev)
     bik[[l]] <- matrix(0,ii[l],kk)
+    bikN[[l]] <- matrix(0,ii[l],kk)
 
     for (m in 1:kk) {
 
     bik[[l]][,m] <- matrix(rnorm(ii[l],0,biksigma[m]),ii[l],1)
+    bikN[[l]][,m] <- matrix(rnorm(ii[l],0,0),ii[l],1)
 
     }
 
@@ -93,6 +96,7 @@ for (j in 1:kk) {
 
 Vijk <- list()
 yik <- list()
+yikT <- list()
 
 # choose between k locations
 for (k in 1:kk) {
@@ -100,7 +104,7 @@ for (k in 1:kk) {
 tijk <- betac*distance[j,k]*zi[[j]] + wijk[[j]][,k]
 
 yik[[k]] <- yconst[1,k] + betavar[k,]*si[[j]] + bik[[j]][,k]
-
+yikT[[k]] <- yik[[k]] + bikN[[j]][,k]
 
 Vijk[[k]] <- alpha*yik[[k]] + tijk
 
@@ -109,7 +113,7 @@ Vijk[[k]] <- alpha*yik[[k]] + tijk
 # choose max utility
 choice[[j]] <- as.matrix(which(t(apply(matrix(unlist(Vijk),ii[j],kk),1,max) ==
     matrix(unlist(Vijk),ii[j],kk)))-(((1:ii[j])-1)*kk))
-yikchosen[[j]] <- as.matrix(diag(matrix(unlist(yik),ii[j],kk)[,choice[[j]]]))
+yikchosen[[j]] <- as.matrix(diag(matrix(unlist(yikT),ii[j],kk)[,choice[[j]]]))
 
 # track vessel characteristics
 siout[[j]] <- si[[j]]
