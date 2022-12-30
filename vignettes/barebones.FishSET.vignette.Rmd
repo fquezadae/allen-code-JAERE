@@ -32,22 +32,22 @@ model with a weibull distributed catch function `epm_weibull`.
 The user supplies `catch`, `choice`, and `distance` data. The data `catch` and
 `choice` should be dimensions *(number of observations) x 1*.
 
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
-zi <- read.csv("zi.csv", header=FALSE)
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+zi <- read.csv("zi.csv", header = FALSE)
 zi$V1 <- as.numeric(zi$V1)
 
-catch <- read.csv("catch.csv", header=FALSE)
+catch <- read.csv("catch.csv", header = FALSE)
 
-choice <- read.csv("choice.csv", header=FALSE)
+choice <- read.csv("choice.csv", header = FALSE)
 choice$V1 <- as.numeric(choice$V1)
 
-predicted_catch <- read.csv("predicted_catch.csv", header=FALSE)
+predicted_catch <- read.csv("predicted_catch.csv", header = FALSE)
 predicted_catch$V3 <- as.numeric(predicted_catch$V3)
 
-distance <- read.csv("distance.csv", header=FALSE)
+distance <- read.csv("distance.csv", header = FALSE)
 
-otherdat <- list(griddat=list(si=as.matrix(predicted_catch)),
-    intdat=list(zi=as.matrix(zi)))
+otherdat <- list(griddat = list(si = as.matrix(predicted_catch)),
+    intdat = list(zi = as.matrix(zi)))
 
 library(barebones.FishSET)
 ```
@@ -102,7 +102,7 @@ function name, and the optimization method for a total of 8 inputs. For example:
 initparams <- c(2.5, -0.8)
 #Initial paramters for revenue then cost.
 
-optimOpt <- c(1000,1.00000000000000e-08,1,1)
+optimOpt <- c(1000, 1.00000000000000e-08, 1, 1)
 #Optimization options for the maximum iterations, the relative tolerance of x,
     #report frequency, and whether to report iterations.
 
@@ -125,8 +125,8 @@ that can be summarized as:
 	H1: The inverse hessian
 
 ```{r, echo=TRUE}
-results <- discretefish_subroutine(catch,choice,distance,otherdat,initparams,
-    optimOpt,func,methodname)
+results <- discretefish_subroutine(catch, choice, distance, otherdat,
+  initparams, optimOpt, func, methodname)
 results
 ```
 
@@ -135,5 +135,5 @@ to 3, and the true disutility from distance was equal to -1. The model estimates
 are correct relative to some unknown scale parameter:
 
 ```{r, echo=TRUE}
-results$OutLogit[1,1]/results$OutLogit[2,1]
+results$OutLogit[1, 1]/results$OutLogit[2, 1]
 ```
