@@ -8,15 +8,15 @@ library(doParallel)
 library(foreach)
 options(scipen = 99)
 
-finaldata <- read.csv(paste0(
-    #CV haul data here, confidential data is not included))
+# CV haul data here, confidential data is not included
+# finaldata <- read.csv(paste0())
 
 # first hauls don't have a previous location (not using ports)
 finaldata <- subset(finaldata, is.na(finaldata$lag.adfgstat6) == FALSE)
 
-# looked up two vessels by hand  
-finaldata$Grosstons[finaldata$ADFGnumber == 56153] <- 1318  
-finaldata$Grosstons[finaldata$ADFGnumber == 56154] <- 1318  
+# looked up two vessels by hand
+finaldata$Grosstons[finaldata$ADFGnumber == 56153] <- 1318
+finaldata$Grosstons[finaldata$ADFGnumber == 56154] <- 1318
 
 # year 2015
 ismall <- 2014
@@ -29,8 +29,9 @@ finaldata <- subset(finaldata, finaldata$Year < ibig)
 finaldata <- subset(finaldata, finaldata$Week >= 23)
 finaldata <- subset(finaldata, finaldata$Week <= 44)
 
-outname <- paste("CVhaul",ismall,ibig,obsnum,sep="_")
-dirout <- paste0(# your directory here)
+outname <- paste("CVhaul", ismall, ibig, obsnum, sep = "_")
+# your directory here
+# dirout <- paste0()
 
 # get spatial data to make sure it's BSAI
 adfgmatch <- read.csv(paste0(dirout, "Groundfish_Statistical_Areas_2001.csv"))
@@ -47,12 +48,9 @@ adfgmatch <- rbind(adfgmatch, c("GOA", 585430))
 adfgmatch <- rbind(adfgmatch, c("BSAI", 655401))
 
 adfgmatch$ADFGstat6 <- as.numeric(adfgmatch$ADFGstat6)
-finaldata <- merge(finaldata, adfgmatch, by = c("ADFGstat6"), all.x = TRUE, 
-    all.y=FALSE)
+finaldata <- merge(finaldata, adfgmatch, by = c("ADFGstat6"), all.x = TRUE,
+    all.y = FALSE)
 finaldata <- finaldata[finaldata$FMP_AREA_CODE == "BSAI", ]
-
-###############################################################################
-###############################################################################
 
 subsetttold <- c(0)
 subsettt <- sort(as.numeric(unique(c(levels(as.factor(finaldata$lag.adfgstat6)),
@@ -60,9 +58,9 @@ subsettt <- sort(as.numeric(unique(c(levels(as.factor(finaldata$lag.adfgstat6)),
 
 # iteratively make sure each location has at least three unique vessels that
 # moved there (for confidentiality) and 20 observations (need number of
-# covariates in catch equation plus number of polynomial terms including 
+# covariates in catch equation plus number of polynomial terms including
 # intercepts and interaction terms for just identified)
-while (length(subsetttold) != length(subsettt) || 
+while (length(subsetttold) != length(subsettt) ||
     any(subsetttold != subsettt)) {
 
 subsetttold <- subsettt
@@ -70,9 +68,9 @@ subsetttold <- subsettt
 finaldata$movedum <- finaldata$ADFGstat6 != finaldata$lag.adfgstat6
 
 uniquecount <- finaldata %>%
-    group_by(ADFGstat6,movedum) %>%
+    group_by(ADFGstat6, movedum) %>%
     summarise(n_distinct(ADFGnumber)) #number of different vessels
-    
+
 uniquecount <- data.frame(uniquecount)
 names(uniquecount)[3] <- "countend"
 
@@ -80,39 +78,37 @@ uniquecount2 <- uniquecount$ADFGstat6[(uniquecount$countend >= 3)]
 
 subsettt1 <- uniquecount2[duplicated(uniquecount2)]
 
-###############################################################################
-
 uniquecountobs <- finaldata %>%
     group_by(ADFGstat6) %>%
     tally() #number of obs
 
 names(uniquecountobs)[2] <- "countend"
 
-uniquecountobs2 <- uniquecountobs[(uniquecountobs$countend >= obsnum),] %>% 
+uniquecountobs2 <- uniquecountobs[(uniquecountobs$countend >= obsnum), ] %>%
     group_by(ADFGstat6) %>%
     filter(n() > 0)
 
 uniquecountobs3 <- uniquecountobs2$ADFGstat6
 
-subsettt2 <- intersect(uniquecountobs3,subsettt1)
+subsettt2 <- intersect(uniquecountobs3, subsettt1)
 
 subsettt <- subsettt2
-    
-finaldata <- finaldata[(finaldata$ADFGstat6 %in% subsettt) & 
+
+finaldata <- finaldata[(finaldata$ADFGstat6 %in% subsettt) &
     (finaldata$lag.adfgstat6 %in% subsettt), ]
 
 subsettt <- as.numeric(subsettt)
-    
+
 }
- 
+
 finaldata <- finaldata[with(finaldata, order(Id)), ]
 finaldata2 <- finaldata
 finaldata2$Portname <- droplevels(finaldata2$Portname)
 
 # get data for mapping
-adfgstat6 = read.table(paste0(dirout, "pollockcvhaul_adfgstat6_map.csv"), 
-    header=TRUE, 
-    sep=",")
+adfgstat6 <- read.table(paste0(dirout, "pollockcvhaul_adfgstat6_map.csv"),
+  header = TRUE,
+  sep = ",")
 names(adfgstat6)[2] <- "ADFGstat6"
 names(adfgstat6)[3] <- "centroidlonin"
 names(adfgstat6)[4] <- "centroidlatin"
@@ -120,15 +116,15 @@ adfgstat6 <- adfgstat6[c("ADFGstat6", "centroidlonin", "centroidlatin")]
 adfgstat6 <- adfgstat6[!duplicated(adfgstat6$ADFGstat6), ]
 adfgin2 <- adfgstat6[adfgstat6$ADFGstat6 %in% subsettt, ]
 
-deg2rad <- function(deg) return(deg*pi/180)
+deg2rad <- function(deg) return(deg * pi/180)
 # Haversine formula (hf) Mario Pineda-Krch
 gcd.hf <- function(long1, lat1, long2, lat2) {
   R <- 6371 # Earth mean radius [km]
   delta.long <- (long2 - long1)
   delta.lat <- (lat2 - lat1)
   a <- sin(delta.lat/2)^2 + cos(lat1) * cos(lat2) * sin(delta.long/2)^2
-  c <- 2 * asin(pmin(1,sqrt(a)))
-  d = R * c
+  c <- 2 * asin(pmin(1, sqrt(a)))
+  d <- R * c
   return(d) # Distance in km
 }
 
@@ -294,11 +290,11 @@ LLmatorder <- LLmat[order(LLmat$X2),]
 initparamssave <- results$savestarts[LLmatorder$X1[1:100]]
 
 #try up to 20 times as long as hessian isn't invertible
-while ((any(is.na(as.numeric(results_save_correction$OutLogit[,2]))) == TRUE) & 
+while ((any(is.na(as.numeric(results_save_correction$OutLogit[,2]))) == TRUE) &&
     initcount < 20) {
 
 initcount <- initcount + 1
-    
+
 initparams <- initparamssave[[initcount]]
 
 results_save_correction <- discretefish_subroutine(catchfin,choicefin,
@@ -337,9 +333,9 @@ pchisq(2*(results_save_correction$MCM$LL-results_save_nocorrection$MCM$LL),
 outdat <- (list(correction=results_save_correction,
     nocorrection=results_save_nocorrection,
     uncorrected=results_save_uncorrected, uncorrectcoef=betaout, 
-    choicetab=table(choicefin), probs = probmovesave #note probmovesave global
+    choicetab=table(choicefin), probs = probmovesave, #note probmovesave global
     initparams = initparamscorr, LLout = LLout))
-    
+
 saveRDS(outdat, paste0(dirout, outname, "_",
     initcount, ".rds"))
 
@@ -486,7 +482,7 @@ for (i in 1:kk) {
 
 seout <- list()
 
-for (a in 1:length(z1)) {
+for (a in seq_along(z1)) {
 
 zz1 <- z1[a]
 zz2 <- z2[a]
@@ -655,7 +651,7 @@ names(Uncorrectweights)[4] <- "RelativeCatch"
 Uncorrectweights$Method = "Uncorrected"
 
 # merge predicted catches into spatial polygon data
-subadfgstat6$orderobs <- 1:dim(subadfgstat6)[1]
+subadfgstat6$orderobs <- seq_len(dim(subadfgstat6)[1])
 tempadfg1 <- merge(subadfgstat6,FIMLweights,by=c("ADFGstat6"))
 tempadfg2 <- merge(subadfgstat6,Uncorrectweights,by=c("ADFGstat6"))
 tempadfg1 =  tempadfg1[with(tempadfg1, order(orderobs)), ]
