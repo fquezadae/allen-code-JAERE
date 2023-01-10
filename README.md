@@ -31,7 +31,7 @@ Please see vignette for usage examples.
 
 You can create a stand-alone .html vignette by then running:
 
-  > setwd("barebones.FishSET")
+  > setwd("barebones.FishSET")  
   > devtools::build_vignettes()
 
 Reproducible example
