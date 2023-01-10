@@ -11,7 +11,7 @@ Installation
 
 To install with vignette:
 
-  > install.packages("devtools")
+  > install.packages("devtools")  
   > library(devtools)
 
 Set the directory you've downloaded the package into:
@@ -24,7 +24,7 @@ Install with vignettes:
 
 Check out documentation and vignette:
 
-  > help(package="barebones.FishSET")
+  > help(package="barebones.FishSET")  
   > vignette("barebones.FishSET.vignette", package="barebones.FishSET")
 
 Please see vignette for usage examples.
