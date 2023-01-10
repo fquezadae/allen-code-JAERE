@@ -38,7 +38,7 @@ Reproducible example
 -----------------
 
 The code used to reproduce the work in "Chen, Y. Allen, Alan C. Haynie, and
-Christopher M. Anderson. 2022. Journal of the Association of Environmental and
+Christopher M. Anderson. 2023. Journal of the Association of Environmental and
 Resource Economists." can be found below. This also serves as an use example of
 the package. Please note the package functions should be generalizable to any
 discrete choice problem - please see vignette for examples.
@@ -75,7 +75,7 @@ regconstant <- 0
 
 for (it in seq(1, 4, by = 0.5)) {
 
-# run a model for each catch devation for figure 3
+# run a model for each catch deviation
 cdev <- it
 
 # about 3 hours each with 8 workers
