@@ -7,7 +7,6 @@ This is a barebones version of the FishSET package, primarily used for directly
 calling some of the lower-level functions.
 
 Installation
-
 ---
 
 To install with vignette:
